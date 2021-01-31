@@ -15,17 +15,19 @@ public class Canvas extends JPanel {
     @Override
     public void paint(Graphics g) {
         super.paint(g);
-        g.drawImage(
-                this.image,
-                0,
-                0,
-                this.getWidth(),
-                this.getHeight(),
-                0,
-                0,
-                image.getWidth(null),
-                image.getHeight(null),
-                null
-        );
+        if (image != null) {
+            g.drawImage(
+                    this.image,
+                    0,
+                    0,
+                    this.getWidth(),
+                    this.getHeight(),
+                    0,
+                    0,
+                    image.getWidth(null),
+                    image.getHeight(null),
+                    null
+            );
+        }
     }
 }
