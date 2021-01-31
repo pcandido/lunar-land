@@ -74,9 +74,9 @@ public class UI {
 
         int max = 0;
 
-        for (int[] dist : dists) {
-            for (int j = 0; j < dists[0].length; j++) {
-                max = Math.max(max, dist[j]);
+        for (int[] distX : dists) {
+            for (int dist : distX) {
+                max = Math.max(max, dist);
             }
         }
 
@@ -85,7 +85,7 @@ public class UI {
                 if (dists[i][j] < 0)
                     img.setRGB(i, j, Color.red.getRGB());
                 else
-                    img.setRGB(i, j, new Color(0, 0, Math.min(255, dists[i][j])).getRGB());
+                    img.setRGB(i, j, new Color(0, 0, (int) (dists[i][j] * 255.0 / max)).getRGB());
             }
         }
 
