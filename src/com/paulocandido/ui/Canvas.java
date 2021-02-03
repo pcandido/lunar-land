@@ -10,6 +10,7 @@ public class Canvas extends JPanel {
 
     public void setImage(Image image) {
         this.image = image;
+        this.repaint();
     }
 
     @Override
