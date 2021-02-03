@@ -15,17 +15,16 @@ public class Moon {
     public static final short TYPE_AIR = 1;
     public static final short TYPE_SPOT = 2;
 
-
-    private final URL mapFile;
+    private final URL imageFile;
     private final int width;
     private final int height;
     private final short[][] types;
     private final int[][] distances;
 
-    public Moon(String mapFileName) throws IOException {
-        this.mapFile = Objects.requireNonNull(getClass().getClassLoader().getResource(mapFileName));
+    public Moon(String imageFileName) throws IOException {
+        this.imageFile = Objects.requireNonNull(getClass().getClassLoader().getResource(imageFileName));
 
-        var image = ImageIO.read(this.mapFile);
+        var image = ImageIO.read(this.imageFile);
 
         this.width = image.getWidth();
         this.height = image.getHeight();
@@ -53,6 +52,10 @@ public class Moon {
         }
 
         return types;
+    }
+
+    public URL getImageFile() {
+        return imageFile;
     }
 
     public int getWidth() {
