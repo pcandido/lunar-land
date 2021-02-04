@@ -1,7 +1,9 @@
 package com.paulocandido.ui;
 
 import com.paulocandido.model.Moon;
+import com.paulocandido.model.Population;
 import com.paulocandido.ui.drawer.MoonDrawer;
+import com.paulocandido.ui.drawer.SpaceshipDrawer;
 
 import javax.swing.*;
 import java.awt.*;
@@ -17,8 +19,9 @@ public class UI implements Runnable, WindowListener {
     private final int height;
 
     private final MoonDrawer moonDrawer;
+    private final SpaceshipDrawer spaceshipDrawer;
 
-    public UI(Moon moon) throws IOException {
+    public UI(Moon moon, Population population) throws IOException {
 
         this.width = moon.getWidth();
         this.height = moon.getHeight();
@@ -33,6 +36,7 @@ public class UI implements Runnable, WindowListener {
         frame.pack();
 
         moonDrawer = new MoonDrawer(moon, this.width, this.height);
+        spaceshipDrawer = new SpaceshipDrawer(population);
 
         new Thread(this).start();
 
@@ -41,12 +45,13 @@ public class UI implements Runnable, WindowListener {
 
     @Override
     public void run() {
-        while(true){
+        while (true) {
 
             BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
             Graphics2D graphics = (Graphics2D) image.getGraphics();
 
             moonDrawer.draw(graphics);
+            spaceshipDrawer.draw(graphics);
 
             this.canvas.setImage(image);
 
