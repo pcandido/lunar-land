@@ -57,7 +57,7 @@ public class UI implements Runnable, WindowListener {
 
             try {
                 //noinspection BusyWait
-                Thread.sleep(40);
+                Thread.sleep(20);
             } catch (InterruptedException e) {
                 e.printStackTrace();
                 System.exit(1);

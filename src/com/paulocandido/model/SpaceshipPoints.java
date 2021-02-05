@@ -51,6 +51,14 @@ public class SpaceshipPoints {
             return y;
         }
 
+        public int getIntX(){
+            return (int) x;
+        }
+
+        public int getIntY(){
+            return (int) y;
+        }
+
         public boolean isLandingGear() {
             return landingGear;
         }

@@ -26,6 +26,8 @@ public class SpaceshipDrawer {
 
     public void draw(Graphics2D canvas) {
         for (Spaceship spaceship : population.getSnapshot()) {
+            if (spaceship.getStatus() == Spaceship.Status.fail) continue;
+
             canvas.rotate(Math.toRadians(spaceship.getR()), spaceship.getX(), spaceship.getY());
 
             canvas.drawImage(

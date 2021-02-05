@@ -21,11 +21,13 @@ public class Spaceship {
     public static final double WIDTH = 74;
     public static final double HEIGHT = 64;
 
+    private Status status;
     private double x;
     private double y;
     private double r;
 
     public Spaceship(double x, double y, double r) {
+        this.status = Status.active;
         this.x = x;
         this.y = y;
         this.r = r;
@@ -35,24 +37,31 @@ public class Spaceship {
         return x;
     }
 
-    public void setX(double x) {
-        this.x = x;
-    }
-
     public double getY() {
         return y;
-    }
-
-    public void setY(double y) {
-        this.y = y;
     }
 
     public double getR() {
         return r;
     }
 
-    public void setR(double r) {
-        this.r = r;
+    public Status getStatus() {
+        return status;
+    }
+
+    public void update(Moon moon) {
+        this.y += 1;
+
+        SpaceshipPoints.Calculated[] points = getPoints();
+
+        for (SpaceshipPoints.Calculated point : points) {
+            int px = point.getIntX();
+            int py = point.getIntY();
+
+            if (moon.getType(px, py) != Moon.Type.air) {
+                status = Status.fail;
+            }
+        }
     }
 
     public SpaceshipPoints.Calculated[] getPoints() {
@@ -63,8 +72,11 @@ public class Spaceship {
         return calculated;
     }
 
-    public SpaceshipPoints.Calculated getDistancePoint(){
+    public SpaceshipPoints.Calculated getDistancePoint() {
         return distancePoint.calculate(this);
     }
 
+    public enum Status {
+        active, fail, success
+    }
 }

@@ -14,8 +14,8 @@ public class Population {
     public Population(int size, double noise) {
         this.spaceships = IntStream.range(0, size).mapToObj(a ->
                 new Spaceship(
-                        30 + ((SeededRandom.get().nextDouble() - 0.5) * 50 * noise),
-                        30 + ((SeededRandom.get().nextDouble() - 0.5) * 50 * noise),
+                        70 + ((SeededRandom.get().nextDouble() - 0.5) * 50 * noise),
+                        70 + ((SeededRandom.get().nextDouble() - 0.5) * 50 * noise),
                         0 + ((SeededRandom.get().nextDouble() - 0.5) * 90 * noise)
                 )
         ).collect(Collectors.toList());
@@ -23,6 +23,10 @@ public class Population {
 
     public List<Spaceship> getSnapshot() {
         return new ArrayList<>(this.spaceships);
+    }
+
+    public void update(Moon moon){
+        spaceships.forEach(a -> a.update(moon));
     }
 
 }

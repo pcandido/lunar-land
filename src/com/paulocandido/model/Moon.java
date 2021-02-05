@@ -11,14 +11,10 @@ import java.util.*;
 
 public class Moon {
 
-    public static final short TYPE_GROUND = 0;
-    public static final short TYPE_AIR = 1;
-    public static final short TYPE_SPOT = 2;
-
     private final URL imageFile;
     private final int width;
     private final int height;
-    private final short[][] types;
+    private final Type[][] types;
     private final int[][] distances;
 
     public Moon(String imageFileName) throws IOException {
@@ -30,21 +26,21 @@ public class Moon {
         this.height = image.getHeight();
 
         this.types = fillTypes(image);
-        this.distances = new Wavefront(TYPE_GROUND, TYPE_AIR, TYPE_SPOT).getDistances(this.types);
+        this.distances = new Wavefront().getDistances(this.types);
     }
 
-    private static short[][] fillTypes(BufferedImage image) {
-        var types = new short[image.getWidth()][image.getHeight()];
+    private static Type[][] fillTypes(BufferedImage image) {
+        var types = new Type[image.getWidth()][image.getHeight()];
 
         for (int i = 0; i < image.getWidth(); i++) {
             for (int j = 0; j < image.getHeight(); j++) {
                 var color = new Color(image.getRGB(i, j));
                 if (color.equals(Color.black)) {
-                    types[i][j] = TYPE_GROUND;
+                    types[i][j] = Type.ground;
                 } else if (color.equals(Color.white)) {
-                    types[i][j] = TYPE_AIR;
+                    types[i][j] = Type.air;
                 } else if (color.equals(Color.green)) {
-                    types[i][j] = TYPE_SPOT;
+                    types[i][j] = Type.station;
                 } else {
                     throw new RuntimeException("Cor desconhecida no mapa: " + color.toString());
                 }
@@ -66,11 +62,23 @@ public class Moon {
         return height;
     }
 
-    public short[][] getTypes() {
+    public Type[][] getTypes() {
         return types;
+    }
+
+    public Type getType(int x, int y) {
+        if (x < 0) return Type.out;
+        if (y < 0) return Type.out;
+        if (x >= width) return Type.out;
+        if (y >= height) return Type.out;
+        return types[x][y];
     }
 
     public int[][] getDistances() {
         return distances;
+    }
+
+    public enum Type {
+        out, ground, air, station
     }
 }
