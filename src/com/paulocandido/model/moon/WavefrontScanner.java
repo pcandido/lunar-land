@@ -1,11 +1,9 @@
-package com.paulocandido.utils;
-
-import com.paulocandido.model.Moon;
+package com.paulocandido.model.moon;
 
 import java.util.LinkedList;
 import java.util.Queue;
 
-public class Wavefront {
+public class WavefrontScanner {
 
     private void actOnNeighbors(int i, int j, int width, int height, NeighborAction action) {
         if (i - 1 >= 0) action.act(i - 1, j);
@@ -14,7 +12,7 @@ public class Wavefront {
         if (j + 1 < height) action.act(i, j + 1);
     }
 
-    public int[][] getDistances(Moon.Type[][] types) {
+    public int[][] getDistances(PointType[][] types) {
         var distances = new int[types.length][types[0].length];
         var width = types.length;
         var height = types[0].length;
@@ -23,11 +21,11 @@ public class Wavefront {
 
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < height; j++) {
-                if (types[i][j] == Moon.Type.ground) {
+                if (types[i][j] == PointType.ground) {
                     distances[i][j] = -1;
-                } else if (types[i][j] == Moon.Type.air) {
+                } else if (types[i][j] == PointType.air) {
                     distances[i][j] = Integer.MAX_VALUE;
-                } else if (types[i][j] == Moon.Type.station) {
+                } else if (types[i][j] == PointType.station) {
                     distances[i][j] = 0;
                     actOnNeighbors(i, j, width, height, (ni, nj) -> queue.add(new int[]{ni, nj, 1}));
                 }

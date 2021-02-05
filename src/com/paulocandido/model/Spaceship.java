@@ -1,6 +1,6 @@
 package com.paulocandido.model;
 
-import java.util.Arrays;
+import com.paulocandido.model.moon.PointType;
 
 public class Spaceship {
 
@@ -58,7 +58,7 @@ public class Spaceship {
             int px = point.getIntX();
             int py = point.getIntY();
 
-            if (moon.getType(px, py) != Moon.Type.air) {
+            if (moon.getType(px, py) != PointType.air) {
                 status = Status.fail;
             }
         }
