@@ -45,7 +45,7 @@ public class Spaceship {
     NeuralNetwork neuralNetwork;
 
     public Spaceship() {
-        this(new NeuralNetwork(2, 3, 4));
+        this(new NeuralNetwork(4 + points.length, 3, 10, 10));
     }
 
     public Spaceship(NeuralNetwork neuralNetwork) {
@@ -120,10 +120,18 @@ public class Spaceship {
 
         jet = false;
 
-        double[] result = this.neuralNetwork.calculate(new double[]{
-                getR(),
-                this.dist
-        });
+        SpaceshipPoints.Calculated[] oldPoints = getPoints();
+
+        double[] input = new double[oldPoints.length + 4];
+        input[0] = vx;
+        input[1] = vy;
+        input[2] = vr;
+        input[3] = getRNorm();
+        for (int i = 0; i < oldPoints.length; i++) {
+            input[i + 4] = moon.getDistance(oldPoints[i].getIntX(), oldPoints[i].getIntY());
+        }
+
+        double[] result = this.neuralNetwork.calculate(input);
 
         if (result[0] > 0 && fuel >= 1) {
             //main
