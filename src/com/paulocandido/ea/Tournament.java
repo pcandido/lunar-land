@@ -1,4 +1,4 @@
-package com.paulocandido.ga;
+package com.paulocandido.ea;
 
 import com.paulocandido.utils.SeededRandom;
 

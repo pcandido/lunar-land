@@ -1,4 +1,4 @@
-package com.paulocandido.ga.mutation;
+package com.paulocandido.ea.mutation;
 
 public interface Mutation {
 

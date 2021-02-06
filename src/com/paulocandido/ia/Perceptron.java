@@ -1,6 +1,6 @@
 package com.paulocandido.ia;
 
-import com.paulocandido.ga.mutation.Mutation;
+import com.paulocandido.ea.mutation.Mutation;
 import com.paulocandido.ia.activation.ActivationFunction;
 import com.paulocandido.utils.SeededRandom;
 
@@ -43,6 +43,7 @@ public class Perceptron {
             weights[gene] = mutation.mutate(weights[gene]);
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Perceptron clone() {
         double[] clonedPesos = new double[weights.length];
         System.arraycopy(weights, 0, clonedPesos, 0, weights.length);

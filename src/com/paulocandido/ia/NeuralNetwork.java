@@ -1,6 +1,6 @@
 package com.paulocandido.ia;
 
-import com.paulocandido.ga.mutation.Mutation;
+import com.paulocandido.ea.mutation.Mutation;
 import com.paulocandido.ia.activation.Relu;
 import com.paulocandido.ia.activation.ReluDx;
 import com.paulocandido.utils.SeededRandom;
@@ -51,6 +51,7 @@ public class NeuralNetwork {
             hiddenLayers[layer].mutate(mutation);
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public NeuralNetwork clone() {
         Layer[] hidden = new Layer[hiddenLayers.length];
         for (int i = 0; i < hiddenLayers.length; i++) {

@@ -1,5 +1,6 @@
 package com.paulocandido.model;
 
+import com.paulocandido.ia.Layer;
 import com.paulocandido.ia.NeuralNetwork;
 import com.paulocandido.model.moon.PointType;
 import com.paulocandido.model.spaceship.SpaceshipPoints;
@@ -43,16 +44,27 @@ public class Spaceship {
     private double fitness;
     NeuralNetwork neuralNetwork;
 
-    public Spaceship(double x, double y, double r, double fuel) {
+    public Spaceship() {
+        this(new NeuralNetwork(2, 3, 4));
+    }
+
+    public Spaceship(NeuralNetwork neuralNetwork) {
         this.status = Status.active;
-        this.x = x;
-        this.y = y;
-        this.r = r;
+        this.x = 70;
+        this.y = 70;
+        this.r = 0;
         this.vx = 0;
         this.vy = 0;
         this.vr = 0;
         this.jet = false;
-        this.fuel = fuel;
+        this.fuel = 1500;
+        this.fitness = 0;
+        this.neuralNetwork = neuralNetwork;
+    }
+
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
+    public Spaceship clone() {
+        return new Spaceship(this.neuralNetwork.clone());
     }
 
     public double getX() {
@@ -67,12 +79,24 @@ public class Spaceship {
         return r;
     }
 
+    public double getRNorm() {
+        return 1 - (Math.pow(this.r - 180, 2) / (180 * 180));
+    }
+
     public Status getStatus() {
         return status;
     }
 
     public boolean isJetting() {
         return jet;
+    }
+
+    public double getDist() {
+        return dist;
+    }
+
+    public double getFitness() {
+        return fitness;
     }
 
     public NeuralNetwork getNeuralNetwork() {
@@ -96,19 +120,25 @@ public class Spaceship {
 
         jet = false;
 
-        //action
+        double[] result = this.neuralNetwork.calculate(new double[]{
+                getR(),
+                this.dist
+        });
 
-        if (false && fuel >= 1) {//main
+        if (result[0] > 0 && fuel >= 1) {
+            //main
             this.vx += Math.cos(Math.toRadians(this.r) - 90) * 0.006;
             this.vy += Math.sin(Math.toRadians(this.r) - 90) * 0.006;
             this.jet = true;
             this.fuel -= 1;
         }
-        if (false && fuel >= 0.1) {//right
+        if (result[1] > 0 && fuel >= 0.1) {
+            //right
             this.vr += 0.006;
             this.fuel -= 0.1;
         }
-        if (false && fuel >= 0.1) {//left
+        if (result[2] > 0 && fuel >= 0.1) {
+            //left
             this.vr -= 0.006;
             this.fuel -= 0.1;
         }
@@ -125,7 +155,13 @@ public class Spaceship {
         this.r += this.vr;
 
         this.dist = moon.getDistance((int) x, (int) y);
-        this.fitness = 1/dist;
+
+        var distNorm = Math.abs(dist / moon.getMaxDistance());
+        var rNorm = getRNorm();
+        var vxNorm = Math.abs(vx / MAX_XY_VELOCITY);
+        var vyNorm = Math.abs(vy / MAX_XY_VELOCITY);
+
+        this.fitness = (1 - distNorm) * 1.3 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm);
 
         SpaceshipPoints.Calculated[] points = getPoints();
 

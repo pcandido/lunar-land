@@ -33,17 +33,21 @@ public class Main extends Thread {
     }
 
     @Override
+    @SuppressWarnings("BusyWait")
     public void run() {
         while (true) {
-            this.population.update(moon);
+            while (population.isAnyActive()) {
+                population.update(moon);
 
-            try {
-                //noinspection BusyWait
-                Thread.sleep(20);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-                System.exit(1);
+                try {
+                    Thread.sleep(Config.SIMULATION_VELOCITY);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
             }
+
+            population.nextGeneration();
         }
     }
 }

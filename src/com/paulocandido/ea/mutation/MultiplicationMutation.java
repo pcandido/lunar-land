@@ -1,4 +1,4 @@
-package com.paulocandido.ga.mutation;
+package com.paulocandido.ea.mutation;
 
 import com.paulocandido.utils.SeededRandom;
 

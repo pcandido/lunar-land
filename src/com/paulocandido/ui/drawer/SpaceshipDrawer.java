@@ -28,14 +28,18 @@ public class SpaceshipDrawer {
         for (Spaceship spaceship : population.getSnapshot()) {
             if (spaceship.getStatus() == Spaceship.Status.fail) continue;
 
-            canvas.rotate(Math.toRadians(spaceship.getR()), spaceship.getX(), spaceship.getY());
+            double x = spaceship.getX();
+            double y = spaceship.getY();
+            double r = spaceship.getR();
+
+            canvas.rotate(Math.toRadians(r), x, y);
 
             canvas.drawImage(
                     spaceshipImage,
-                    toInt(spaceship.getX() - Spaceship.WIDTH / 2),
-                    toInt(spaceship.getY() - Spaceship.HEIGHT / 2),
-                    toInt(spaceship.getX() + Spaceship.WIDTH / 2),
-                    toInt(spaceship.getY() + Spaceship.HEIGHT / 2),
+                    toInt(x - Spaceship.WIDTH / 2),
+                    toInt(y - Spaceship.HEIGHT / 2),
+                    toInt(x + Spaceship.WIDTH / 2),
+                    toInt(y + Spaceship.HEIGHT / 2),
                     0,
                     0,
                     spaceshipImage.getWidth(null),
@@ -46,10 +50,10 @@ public class SpaceshipDrawer {
             if (spaceship.isJetting()) {
                 canvas.drawImage(
                         fireImage,
-                        toInt(spaceship.getX() - Spaceship.WIDTH * 0.2),
-                        toInt(spaceship.getY() + Spaceship.HEIGHT / 2),
-                        toInt(spaceship.getX() + Spaceship.WIDTH * 0.2),
-                        toInt(spaceship.getY() + Spaceship.HEIGHT),
+                        toInt(x - Spaceship.WIDTH * 0.2),
+                        toInt(y + Spaceship.HEIGHT / 2),
+                        toInt(x + Spaceship.WIDTH * 0.2),
+                        toInt(y + Spaceship.HEIGHT),
                         0,
                         0,
                         fireImage.getWidth(null),
@@ -58,7 +62,7 @@ public class SpaceshipDrawer {
                 );
             }
 
-            canvas.rotate(Math.toRadians(spaceship.getR() * -1), spaceship.getX(), spaceship.getY());
+            canvas.rotate(Math.toRadians(r * -1), x, y);
         }
     }
 

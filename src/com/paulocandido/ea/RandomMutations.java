@@ -1,10 +1,10 @@
-package com.paulocandido.ga;
+package com.paulocandido.ea;
 
 import com.paulocandido.Config;
-import com.paulocandido.ga.mutation.ChangeMutation;
-import com.paulocandido.ga.mutation.MultiplicationMutation;
-import com.paulocandido.ga.mutation.Mutation;
-import com.paulocandido.ga.mutation.SumMutation;
+import com.paulocandido.ea.mutation.ChangeMutation;
+import com.paulocandido.ea.mutation.MultiplicationMutation;
+import com.paulocandido.ea.mutation.Mutation;
+import com.paulocandido.ea.mutation.SumMutation;
 import com.paulocandido.model.Spaceship;
 import com.paulocandido.utils.SeededRandom;
 

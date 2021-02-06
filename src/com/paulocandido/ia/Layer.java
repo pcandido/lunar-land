@@ -1,6 +1,6 @@
 package com.paulocandido.ia;
 
-import com.paulocandido.ga.mutation.Mutation;
+import com.paulocandido.ea.mutation.Mutation;
 import com.paulocandido.ia.activation.ActivationFunction;
 import com.paulocandido.utils.SeededRandom;
 
@@ -37,6 +37,7 @@ public class Layer {
         perceptrons[SeededRandom.get().nextInt(perceptrons.length)].mutate(mutation);
     }
 
+    @SuppressWarnings("MethodDoesntCallSuperMethod")
     public Layer clone() {
         Perceptron[] cloned = new Perceptron[perceptrons.length];
         for (int i = 0; i < perceptrons.length; i++) {
