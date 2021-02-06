@@ -13,4 +13,8 @@ public class SeededRandom {
 
         return random;
     }
+
+    public static double getGeneValue() {
+        return (get().nextDouble() - 0.5) * 10;
+    }
 }

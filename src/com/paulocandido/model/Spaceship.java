@@ -1,6 +1,8 @@
 package com.paulocandido.model;
 
+import com.paulocandido.ia.NeuralNetwork;
 import com.paulocandido.model.moon.PointType;
+import com.paulocandido.model.spaceship.SpaceshipPoints;
 
 public class Spaceship {
 
@@ -37,6 +39,10 @@ public class Spaceship {
     private boolean jet;
     private double fuel;
 
+    private double dist;
+    private double fitness;
+    NeuralNetwork neuralNetwork;
+
     public Spaceship(double x, double y, double r, double fuel) {
         this.status = Status.active;
         this.x = x;
@@ -61,24 +67,16 @@ public class Spaceship {
         return r;
     }
 
-    public double getVx() {
-        return vx;
-    }
-
-    public double getVy() {
-        return vy;
-    }
-
-    public double getVr() {
-        return vr;
-    }
-
     public Status getStatus() {
         return status;
     }
 
     public boolean isJetting() {
         return jet;
+    }
+
+    public NeuralNetwork getNeuralNetwork() {
+        return neuralNetwork;
     }
 
     private double restrict(double value, double max) {
@@ -100,7 +98,7 @@ public class Spaceship {
 
         //action
 
-        if (true && fuel >= 1) {//main
+        if (false && fuel >= 1) {//main
             this.vx += Math.cos(Math.toRadians(this.r) - 90) * 0.006;
             this.vy += Math.sin(Math.toRadians(this.r) - 90) * 0.006;
             this.jet = true;
@@ -125,6 +123,9 @@ public class Spaceship {
         this.y += this.vy;
         this.x += this.vx;
         this.r += this.vr;
+
+        this.dist = moon.getDistance((int) x, (int) y);
+        this.fitness = 1/dist;
 
         SpaceshipPoints.Calculated[] points = getPoints();
 

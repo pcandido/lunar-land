@@ -1,4 +1,6 @@
-package com.paulocandido.model;
+package com.paulocandido.model.spaceship;
+
+import com.paulocandido.model.Spaceship;
 
 public class SpaceshipPoints {
 
@@ -10,14 +12,6 @@ public class SpaceshipPoints {
         this.xDelta = xDelta;
         this.yDelta = yDelta;
         this.landingGear = landingGear;
-    }
-
-    public double getxDelta() {
-        return xDelta;
-    }
-
-    public double getyDelta() {
-        return yDelta;
     }
 
     public Calculated calculate(Spaceship spaceship) {

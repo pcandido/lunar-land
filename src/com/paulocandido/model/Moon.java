@@ -28,7 +28,7 @@ public class Moon {
         this.height = image.getHeight();
 
         this.gravity = gravity;
-        this.friction=friction;
+        this.friction = friction;
 
         this.types = new TypeScanner().scan(image);
         this.distances = new WavefrontScanner().getDistances(this.types);
@@ -60,6 +60,10 @@ public class Moon {
         if (x >= width) return PointType.out;
         if (y >= height) return PointType.out;
         return types[x][y];
+    }
+
+    public double getDistance(int x, int y) {
+        return this.distances[x][y];
     }
 
 }
