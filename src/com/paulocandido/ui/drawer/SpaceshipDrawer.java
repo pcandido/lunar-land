@@ -43,6 +43,21 @@ public class SpaceshipDrawer {
                     null
             );
 
+            if (spaceship.isJetting()) {
+                canvas.drawImage(
+                        fireImage,
+                        toInt(spaceship.getX() - Spaceship.WIDTH * 0.2),
+                        toInt(spaceship.getY() + Spaceship.HEIGHT / 2),
+                        toInt(spaceship.getX() + Spaceship.WIDTH * 0.2),
+                        toInt(spaceship.getY() + Spaceship.HEIGHT),
+                        0,
+                        0,
+                        fireImage.getWidth(null),
+                        fireImage.getHeight(null),
+                        null
+                );
+            }
+
             canvas.rotate(Math.toRadians(spaceship.getR() * -1), spaceship.getX(), spaceship.getY());
         }
     }

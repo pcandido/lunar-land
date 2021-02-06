@@ -11,12 +11,13 @@ public class Population {
 
     private List<Spaceship> spaceships;
 
-    public Population(int size, double noise) {
+    public Population(int size, double noise, double initialFuel) {
         this.spaceships = IntStream.range(0, size).mapToObj(a ->
                 new Spaceship(
                         70 + ((SeededRandom.get().nextDouble() - 0.5) * 50 * noise),
                         70 + ((SeededRandom.get().nextDouble() - 0.5) * 50 * noise),
-                        0 + ((SeededRandom.get().nextDouble() - 0.5) * 90 * noise)
+                        0 + ((SeededRandom.get().nextDouble() - 0.5) * 90 * noise),
+                        initialFuel
                 )
         ).collect(Collectors.toList());
     }

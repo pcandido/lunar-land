@@ -14,10 +14,12 @@ public class Moon {
     private final URL imageFile;
     private final int width;
     private final int height;
+    private final double gravity;
+    private final double friction;
     private final PointType[][] types;
     private final int[][] distances;
 
-    public Moon(String imageFileName) throws IOException {
+    public Moon(String imageFileName, double gravity, double friction) throws IOException {
         this.imageFile = Objects.requireNonNull(getClass().getClassLoader().getResource(imageFileName));
 
         var image = ImageIO.read(this.imageFile);
@@ -25,11 +27,12 @@ public class Moon {
         this.width = image.getWidth();
         this.height = image.getHeight();
 
+        this.gravity = gravity;
+        this.friction=friction;
+
         this.types = new TypeScanner().scan(image);
         this.distances = new WavefrontScanner().getDistances(this.types);
     }
-
-
 
     public URL getImageFile() {
         return imageFile;
@@ -43,6 +46,14 @@ public class Moon {
         return height;
     }
 
+    public double getGravity() {
+        return gravity;
+    }
+
+    public double getFriction() {
+        return friction;
+    }
+
     public PointType getType(int x, int y) {
         if (x < 0) return PointType.out;
         if (y < 0) return PointType.out;
@@ -50,10 +61,5 @@ public class Moon {
         if (y >= height) return PointType.out;
         return types[x][y];
     }
-
-    public int[][] getDistances() {
-        return distances;
-    }
-
 
 }

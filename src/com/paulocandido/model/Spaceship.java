@@ -21,16 +21,32 @@ public class Spaceship {
     public static final double WIDTH = 74;
     public static final double HEIGHT = 64;
 
+    public static final double MAX_XY_VELOCITY = 3;
+    public static final double MAX_R_VELOCITY = 2;
+
     private Status status;
+
     private double x;
     private double y;
     private double r;
 
-    public Spaceship(double x, double y, double r) {
+    private double vx;
+    private double vy;
+    private double vr;
+
+    private boolean jet;
+    private double fuel;
+
+    public Spaceship(double x, double y, double r, double fuel) {
         this.status = Status.active;
         this.x = x;
         this.y = y;
         this.r = r;
+        this.vx = 0;
+        this.vy = 0;
+        this.vr = 0;
+        this.jet = false;
+        this.fuel = fuel;
     }
 
     public double getX() {
@@ -45,12 +61,70 @@ public class Spaceship {
         return r;
     }
 
+    public double getVx() {
+        return vx;
+    }
+
+    public double getVy() {
+        return vy;
+    }
+
+    public double getVr() {
+        return vr;
+    }
+
     public Status getStatus() {
         return status;
     }
 
+    public boolean isJetting() {
+        return jet;
+    }
+
+    private double restrict(double value, double max) {
+        if (Math.abs(value) > max) {
+            return max * (value / Math.abs(value));
+        } else {
+            return value;
+        }
+    }
+
     public void update(Moon moon) {
-        this.y += 1;
+        if (status != Status.active) return;
+
+        vy += moon.getGravity();
+        vx *= 1 - moon.getFriction();
+        vr *= 1 - moon.getFriction();
+
+        jet = false;
+
+        //action
+
+        if (true && fuel >= 1) {//main
+            this.vx += Math.cos(Math.toRadians(this.r) - 90) * 0.006;
+            this.vy += Math.sin(Math.toRadians(this.r) - 90) * 0.006;
+            this.jet = true;
+            this.fuel -= 1;
+        }
+        if (false && fuel >= 0.1) {//right
+            this.vr += 0.006;
+            this.fuel -= 0.1;
+        }
+        if (false && fuel >= 0.1) {//left
+            this.vr -= 0.006;
+            this.fuel -= 0.1;
+        }
+
+        if (this.r > 360) this.r -= 360;
+        if (this.r < 0) this.r += 360;
+
+        this.vx = this.restrict(this.vx, MAX_XY_VELOCITY);
+        this.vy = this.restrict(this.vy, MAX_XY_VELOCITY);
+        this.vr = this.restrict(this.vr, MAX_R_VELOCITY);
+
+        this.y += this.vy;
+        this.x += this.vx;
+        this.r += this.vr;
 
         SpaceshipPoints.Calculated[] points = getPoints();
 
