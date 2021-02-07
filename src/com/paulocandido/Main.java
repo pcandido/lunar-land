@@ -26,11 +26,12 @@ public class Main extends Thread {
 
     private Moon moon;
     private Population population;
+    private int velocity = 0;
 
     public Main(Moon moon, Population population) throws IOException {
         this.moon = moon;
         this.population = population;
-        new UI(this.moon, this.population);
+        new UI(this.moon, this.population, a -> velocity = a);
     }
 
     @Override
@@ -41,7 +42,7 @@ public class Main extends Thread {
                 population.update(moon);
 
                 try {
-                    Thread.sleep(Config.SIMULATION_VELOCITY);
+                    Thread.sleep(10-velocity);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     System.exit(1);

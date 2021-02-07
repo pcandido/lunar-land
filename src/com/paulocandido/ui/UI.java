@@ -6,6 +6,8 @@ import com.paulocandido.ui.drawer.MoonDrawer;
 import com.paulocandido.ui.drawer.SpaceshipDrawer;
 
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -21,7 +23,7 @@ public class UI implements Runnable, WindowListener {
     private final MoonDrawer moonDrawer;
     private final SpaceshipDrawer spaceshipDrawer;
 
-    public UI(Moon moon, Population population) throws IOException {
+    public UI(Moon moon, Population population, VelocityListener velocityListener) throws IOException {
 
         this.width = moon.getWidth();
         this.height = moon.getHeight();
@@ -29,10 +31,16 @@ public class UI implements Runnable, WindowListener {
         JFrame frame = new JFrame("Lunar Land");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addWindowListener(this);
+        frame.setLayout(new BorderLayout());
 
         canvas = new Canvas();
         canvas.setPreferredSize(new Dimension(this.width, this.height));
-        frame.getContentPane().add(canvas);
+        frame.getContentPane().add(canvas, BorderLayout.NORTH);
+
+        var velocity = new JSlider(0, 10, 0);
+        frame.getContentPane().add(velocity, BorderLayout.SOUTH);
+        velocity.addChangeListener(e -> velocityListener.onVelocityChange(velocity.getValue()));
+
         frame.pack();
 
         moonDrawer = new MoonDrawer(moon, this.width, this.height);
@@ -98,6 +106,10 @@ public class UI implements Runnable, WindowListener {
     @Override
     public void windowDeactivated(WindowEvent e) {
 
+    }
+
+    public interface VelocityListener {
+        void onVelocityChange(int velocity);
     }
 
 }
