@@ -172,14 +172,37 @@ public class Spaceship {
         this.fitness = (1 - distNorm) * 4 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm);
 
         SpaceshipPoints.Calculated[] points = getPoints();
+        var touchedStation = false;
 
         for (SpaceshipPoints.Calculated point : points) {
             int px = point.getIntX();
             int py = point.getIntY();
 
+            switch (moon.getType(px, py)) {
+                case air -> {
+                }
+                case out, ground -> status = Status.fail;
+                case station -> {
+                    if (point.isLandingGear())
+                        touchedStation = true;
+                    else
+                        status = Status.fail;
+                }
+            }
+
             if (moon.getType(px, py) != PointType.air) {
                 status = Status.fail;
             }
+        }
+
+        if (touchedStation) {
+            if (r > 3 && r < 357) status = Status.fail;
+            else if (vx > 0.1 || vy > 0.1 || vr > 0.1) status = Status.fail;
+            else status = Status.success;
+        }
+
+        if (status != Status.active) {
+            jet = false;
         }
     }
 

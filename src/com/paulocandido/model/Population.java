@@ -49,8 +49,12 @@ public class Population {
             lastBest.update(moon);
     }
 
-    public boolean isAnyActive() {
+    public boolean hasAnyActive() {
         return this.spaceships.stream().anyMatch(a -> a.getStatus() == Spaceship.Status.active);
+    }
+
+    public boolean hasAnySuccess(){
+        return this.spaceships.stream().anyMatch(a -> a.getStatus() == Spaceship.Status.success);
     }
 
     public void nextGeneration() {

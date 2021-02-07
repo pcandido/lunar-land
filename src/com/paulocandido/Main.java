@@ -38,11 +38,20 @@ public class Main extends Thread {
     @SuppressWarnings("BusyWait")
     public void run() {
         while (true) {
-            while (population.isAnyActive()) {
+            while (population.hasAnyActive()) {
                 population.update(moon);
 
                 try {
-                    Thread.sleep(10-velocity);
+                    Thread.sleep(10 - velocity);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                    System.exit(1);
+                }
+            }
+
+            if (population.hasAnySuccess()) {
+                try {
+                    Thread.sleep(5000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     System.exit(1);
