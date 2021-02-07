@@ -15,7 +15,7 @@ public class SpaceshipPoints {
     }
 
     public Calculated calculate(Spaceship spaceship) {
-        var rRad = Math.toRadians(360-spaceship.getR());
+        var rRad = Math.toRadians(360 - spaceship.getR());
         var x = Spaceship.WIDTH * xDelta;
         var y = Spaceship.HEIGHT * yDelta;
 
@@ -45,11 +45,11 @@ public class SpaceshipPoints {
             return y;
         }
 
-        public int getIntX(){
+        public int getIntX() {
             return (int) x;
         }
 
-        public int getIntY(){
+        public int getIntY() {
             return (int) y;
         }
 

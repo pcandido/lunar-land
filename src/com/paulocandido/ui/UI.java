@@ -26,7 +26,7 @@ public class UI implements Runnable, WindowListener {
         this.width = moon.getWidth();
         this.height = moon.getHeight();
 
-        JFrame frame = new JFrame("Dino");
+        JFrame frame = new JFrame("Lunar Land");
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.addWindowListener(this);
 

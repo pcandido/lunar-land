@@ -1,8 +1,6 @@
 package com.paulocandido.ia;
 
 import com.paulocandido.ea.mutation.Mutation;
-import com.paulocandido.ia.activation.Relu;
-import com.paulocandido.ia.activation.ReluDx;
 import com.paulocandido.utils.SeededRandom;
 
 public class NeuralNetwork {
@@ -17,9 +15,9 @@ public class NeuralNetwork {
 
         hiddenLayers = new Layer[hidden.length];
         for (int i = 0; i < hidden.length; i++) {
-            hiddenLayers[i] = new Layer(hidden[i], i == 0 ? input : hidden[i - 1], new Relu());
+            hiddenLayers[i] = new Layer(hidden[i], i == 0 ? input : hidden[i - 1], ActivationFunction.relu);
         }
-        outputLayer = new Layer(output, hidden[hidden.length - 1], new ReluDx());
+        outputLayer = new Layer(output, hidden[hidden.length - 1], ActivationFunction.reluDx);
     }
 
     public NeuralNetwork(int inputLayerSize, Layer[] hiddenLayers, Layer outputLayer) {
@@ -61,19 +59,32 @@ public class NeuralNetwork {
         return new NeuralNetwork(inputLayerSize, hidden, outputLayer.clone());
     }
 
-    @Override
-    public String toString() {
+    public String save() {
         StringBuilder sb = new StringBuilder();
-        for (Layer layer : hiddenLayers) {
-            sb.append("[");
-            sb.append(layer.toString());
-            sb.append("] ");
+
+        sb.append(inputLayerSize);
+        sb.append("\n---\n");
+        sb.append(outputLayer.save());
+        for (Layer hidden : this.hiddenLayers) {
+            sb.append("\n---\n");
+            sb.append(hidden.save());
         }
-        sb.append("[");
-        sb.append(outputLayer.toString());
-        sb.append("]");
 
         return sb.toString();
     }
+
+    public static NeuralNetwork load(String value) {
+        var parts = value.split("---");
+        var inputSize = Integer.parseInt(parts[0].trim());
+        var output = Layer.load(parts[1].trim());
+        var hidden = new Layer[parts.length - 2];
+
+        for (int i = 2, j = 0; i < parts.length; i++, j++) {
+            hidden[j] = Layer.load(parts[i].trim());
+        }
+
+        return new NeuralNetwork(inputSize, hidden, output);
+    }
+
 }
 

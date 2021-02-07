@@ -23,9 +23,9 @@ public class WavefrontScanner {
             for (int j = 0; j < height; j++) {
                 if (types[i][j] == PointType.ground) {
                     distances[i][j] = -1;
-                } else if (types[i][j] == PointType.air) {
+                } else if (types[i][j] == PointType.air || types[i][j] == PointType.station) {
                     distances[i][j] = Integer.MAX_VALUE;
-                } else if (types[i][j] == PointType.station) {
+                } else if (types[i][j] == PointType.touch_point) {
                     distances[i][j] = 0;
                     actOnNeighbors(i, j, width, height, (ni, nj) -> queue.add(new int[]{ni, nj, 1}));
                 }

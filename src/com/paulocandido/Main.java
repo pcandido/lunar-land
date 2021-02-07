@@ -18,7 +18,8 @@ public class Main extends Thread {
                 new Population(
                         50,
                         1,
-                        1500
+                        1500,
+                        args[0]
                 )
         ).start();
     }
@@ -50,4 +51,5 @@ public class Main extends Thread {
             population.nextGeneration();
         }
     }
+
 }

@@ -1,6 +1,5 @@
 package com.paulocandido.model;
 
-import com.paulocandido.ia.Layer;
 import com.paulocandido.ia.NeuralNetwork;
 import com.paulocandido.model.moon.PointType;
 import com.paulocandido.model.spaceship.SpaceshipPoints;
@@ -45,7 +44,7 @@ public class Spaceship {
     NeuralNetwork neuralNetwork;
 
     public Spaceship() {
-        this(new NeuralNetwork(4 + points.length, 3, 10, 10));
+        this(new NeuralNetwork(4 + points.length, 3, 15));
     }
 
     public Spaceship(NeuralNetwork neuralNetwork) {
@@ -168,8 +167,9 @@ public class Spaceship {
         var rNorm = getRNorm();
         var vxNorm = Math.abs(vx / MAX_XY_VELOCITY);
         var vyNorm = Math.abs(vy / MAX_XY_VELOCITY);
+        var vrNorm = Math.abs(vr / MAX_R_VELOCITY);
 
-        this.fitness = (1 - distNorm) * 1.3 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm);
+        this.fitness = (1 - distNorm) * 4 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm);
 
         SpaceshipPoints.Calculated[] points = getPoints();
 

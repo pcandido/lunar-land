@@ -7,7 +7,7 @@ import com.paulocandido.model.moon.WavefrontScanner;
 import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.net.URL;
-import java.util.*;
+import java.util.Objects;
 
 public class Moon {
 

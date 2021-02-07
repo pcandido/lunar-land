@@ -1,8 +1,7 @@
 package com.paulocandido.ui;
 
-import javax.swing.JPanel;
-import java.awt.Graphics;
-import java.awt.Image;
+import javax.swing.*;
+import java.awt.*;
 
 public class Canvas extends JPanel {
 

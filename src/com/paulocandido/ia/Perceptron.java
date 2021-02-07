@@ -1,7 +1,6 @@
 package com.paulocandido.ia;
 
 import com.paulocandido.ea.mutation.Mutation;
-import com.paulocandido.ia.activation.ActivationFunction;
 import com.paulocandido.utils.SeededRandom;
 
 public class Perceptron {
@@ -50,17 +49,29 @@ public class Perceptron {
         return new Perceptron(clonedPesos, bias, activationFunction);
     }
 
-    @Override
-    public String toString() {
+    public String save() {
         StringBuilder sb = new StringBuilder();
-        for (double peso : weights) {
-            sb.append(String.format("%.4f", peso));
+        sb.append(this.activationFunction.toString());
+        sb.append(" ");
+        sb.append(this.bias);
+
+        for (double weight : this.weights) {
             sb.append(" ");
+            sb.append(weight);
         }
 
-        sb.append(": ");
-        sb.append(String.format("%.4f", bias));
-
         return sb.toString();
+    }
+
+    public static Perceptron load(String value) {
+        var parts = value.split(" ");
+        var activationFunction = ActivationFunction.valueOf(parts[0]);
+        var bias = Double.parseDouble(parts[1]);
+        var weights = new double[parts.length - 2];
+        for (int i = 2, j = 0; i < parts.length; i++, j++) {
+            weights[j] = Double.parseDouble(parts[i]);
+        }
+
+        return new Perceptron(weights, bias, activationFunction);
     }
 }

@@ -1,11 +1,7 @@
 package com.paulocandido.ia;
 
 import com.paulocandido.ea.mutation.Mutation;
-import com.paulocandido.ia.activation.ActivationFunction;
 import com.paulocandido.utils.SeededRandom;
-
-import java.util.Arrays;
-import java.util.stream.Collectors;
 
 public class Layer {
 
@@ -47,8 +43,23 @@ public class Layer {
         return new Layer(cloned);
     }
 
-    @Override
-    public String toString() {
-        return Arrays.stream(perceptrons).map(a -> "( " + a.toString() + " )").collect(Collectors.joining(" "));
+    public String save() {
+        StringBuilder sb = new StringBuilder();
+        for (Perceptron perceptron : perceptrons) {
+            sb.append(perceptron.save());
+            sb.append("\n");
+        }
+        return sb.toString().trim();
+    }
+
+    public static Layer load(String value) {
+        var parts = value.split("\n");
+        var perceptrons = new Perceptron[parts.length];
+
+        for (int i = 0; i < parts.length; i++) {
+            perceptrons[i] = Perceptron.load(parts[i]);
+        }
+
+        return new Layer(perceptrons);
     }
 }
