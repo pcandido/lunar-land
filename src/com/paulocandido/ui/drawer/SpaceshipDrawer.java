@@ -14,14 +14,16 @@ public class SpaceshipDrawer {
     private Image spaceshipRedImage;
     private Image spaceshipBlackImage;
     private Image spaceshipTransparentImage;
-    private Image fireImage;
+    private Image fireBlackImage;
+    private Image fireTransparentImage;
 
     public SpaceshipDrawer(Population population) throws IOException {
         this.population = population;
         this.spaceshipRedImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("spaceship-red.png")));
         this.spaceshipBlackImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("spaceship-black.png")));
         this.spaceshipTransparentImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("spaceship-transp.png")));
-        this.fireImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("fire.png")));
+        this.fireBlackImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("fire.png")));
+        this.fireTransparentImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("fire-transp.png")));
     }
 
     private int toInt(double value) {
@@ -43,7 +45,7 @@ public class SpaceshipDrawer {
         double y = spaceship.getY();
         double r = spaceship.getR();
 
-        Image spaceshipImage = switch (color) {
+        var spaceshipImage = switch (color) {
             case red -> spaceshipRedImage;
             case black -> spaceshipBlackImage;
             case transparent -> spaceshipTransparentImage;
@@ -65,6 +67,11 @@ public class SpaceshipDrawer {
         );
 
         if (spaceship.isJetting()) {
+            var fireImage = switch (color) {
+                case red, black -> fireBlackImage;
+                case transparent -> fireTransparentImage;
+            };
+
             canvas.drawImage(
                     fireImage,
                     toInt(x - Spaceship.WIDTH * 0.2),
