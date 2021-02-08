@@ -9,19 +9,13 @@ import java.io.IOException;
 public class Main extends Thread {
 
     public static void main(String[] args) throws IOException {
-        new Main(
-                new Moon(
-                        "moon1.png",
-                        0.003,
-                        0.001
-                ),
-                new Population(
-                        50,
-                        1,
-                        1500,
-                        args[0]
-                )
-        ).start();
+        var mapName = args[0];
+        var trainedDir = args[1];
+        var trainedFile = trainedDir + "/" + mapName.split("\\.")[0] + ".ll";
+
+        var moon = new Moon(mapName, 0.003, 0.001);
+        var population = new Population(moon, 50, 1, 1500, trainedFile);
+        new Main(moon, population).start();
     }
 
     private Moon moon;
@@ -58,7 +52,7 @@ public class Main extends Thread {
                 }
             }
 
-            population.nextGeneration();
+            population.nextGeneration(moon);
         }
     }
 

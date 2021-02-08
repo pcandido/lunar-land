@@ -1,6 +1,7 @@
 package com.paulocandido.model;
 
 import com.paulocandido.model.moon.PointType;
+import com.paulocandido.model.moon.StartScanner;
 import com.paulocandido.model.moon.TypeScanner;
 import com.paulocandido.model.moon.WavefrontScanner;
 
@@ -16,6 +17,8 @@ public class Moon {
     private final int height;
     private final double gravity;
     private final double friction;
+    private final int startX;
+    private final int startY;
     private final PointType[][] types;
     private final int[][] distances;
     private final int maxDistance;
@@ -33,6 +36,9 @@ public class Moon {
 
         this.types = new TypeScanner().scan(image);
         this.distances = new WavefrontScanner().getDistances(this.types);
+        var start = new StartScanner().scan(image);
+        this.startX = start.getX();
+        this.startY = start.getY();
 
         int maxDistance = 0;
         for (int[] yDistances : distances) {
@@ -53,6 +59,14 @@ public class Moon {
 
     public int getHeight() {
         return height;
+    }
+
+    public int getStartX() {
+        return startX;
+    }
+
+    public int getStartY() {
+        return startY;
     }
 
     public double getGravity() {

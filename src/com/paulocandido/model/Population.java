@@ -19,16 +19,16 @@ public class Population {
     private int generation;
     private List<Spaceship> spaceships;
     private Spaceship lastBest;
-    private String bestFileName;
+    private String trainedFileName;
 
-    public Population(int size, double noise, double initialFuel, String bestFileName) {
+    public Population(Moon moon, int size, double noise, double initialFuel, String trainedFileName) {
         this.generation = 1;
-        this.spaceships = IntStream.range(0, size).mapToObj(a -> new Spaceship()).collect(Collectors.toList());
-        this.bestFileName = bestFileName;
+        this.spaceships = IntStream.range(0, size).mapToObj(a -> new Spaceship(moon)).collect(Collectors.toList());
+        this.trainedFileName = trainedFileName;
 
         try {
-            var loadedBestNeuralNetwork = NeuralNetwork.load(FileUtils.readFile(bestFileName));
-            spaceships.set(0, new Spaceship(loadedBestNeuralNetwork));
+            var loadedBestNeuralNetwork = NeuralNetwork.load(FileUtils.readFile(trainedFileName));
+            spaceships.set(0, new Spaceship(moon, loadedBestNeuralNetwork));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -57,12 +57,12 @@ public class Population {
         return this.spaceships.stream().anyMatch(a -> a.getStatus() == Spaceship.Status.success);
     }
 
-    public void nextGeneration() {
+    public void nextGeneration(Moon moon) {
         Spaceship best = spaceships.stream().max(Comparator.comparing(Spaceship::getFitness)).orElseThrow();
-        lastBest = best.clone();
+        lastBest = best.clone(moon);
 
         try {
-            FileUtils.saveFile(bestFileName, best.neuralNetwork.save());
+            FileUtils.saveFile(trainedFileName, best.neuralNetwork.save());
         } catch (IOException e) {
             e.printStackTrace();
             System.exit(1);
@@ -73,12 +73,12 @@ public class Population {
         List<Spaceship> newGen = Tournament
                 .draw(spaceships, Spaceship::getFitness, Config.POPULATION_SIZE / 2 - 1, false)
                 .stream()
-                .flatMap(a -> Arrays.stream(new Spaceship[]{a.clone(), a.clone()}))
+                .flatMap(a -> Arrays.stream(new Spaceship[]{a.clone(moon), a.clone(moon)}))
                 .collect(Collectors.toList());
 
-        newGen.add(best.clone());
+        newGen.add(best.clone(moon));
         RandomMutations.mutate(newGen);
-        newGen.add(best.clone());
+        newGen.add(best.clone(moon));
 
         this.spaceships = newGen;
         generation++;

@@ -43,14 +43,14 @@ public class Spaceship {
     private double fitness;
     NeuralNetwork neuralNetwork;
 
-    public Spaceship() {
-        this(new NeuralNetwork(4 + points.length, 3, 15));
+    public Spaceship(Moon moon) {
+        this(moon, new NeuralNetwork(4 + points.length, 3, 15));
     }
 
-    public Spaceship(NeuralNetwork neuralNetwork) {
+    public Spaceship(Moon moon, NeuralNetwork neuralNetwork) {
         this.status = Status.active;
-        this.x = 70;
-        this.y = 70;
+        this.x = moon.getStartX();
+        this.y = moon.getStartY();
         this.r = 0;
         this.vx = 0;
         this.vy = 0;
@@ -61,9 +61,8 @@ public class Spaceship {
         this.neuralNetwork = neuralNetwork;
     }
 
-    @SuppressWarnings("MethodDoesntCallSuperMethod")
-    public Spaceship clone() {
-        return new Spaceship(this.neuralNetwork.clone());
+    public Spaceship clone(Moon moon) {
+        return new Spaceship(moon, this.neuralNetwork.clone());
     }
 
     public double getX() {

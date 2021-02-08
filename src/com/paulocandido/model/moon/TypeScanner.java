@@ -6,7 +6,7 @@ import java.awt.image.BufferedImage;
 public class TypeScanner {
 
     public PointType[][] scan(BufferedImage image) {
-        var touchPoint = false;
+        var touchPoints = 0;
         var types = new PointType[image.getWidth()][image.getHeight()];
 
         for (int i = 0; i < image.getWidth(); i++) {
@@ -14,14 +14,12 @@ public class TypeScanner {
                 var color = new Color(image.getRGB(i, j));
                 if (color.equals(Color.black)) {
                     types[i][j] = PointType.ground;
-                } else if (color.equals(Color.white)) {
+                } else if (color.equals(Color.white) || color.equals(Color.blue)) {
                     types[i][j] = PointType.air;
                 } else if (color.equals(Color.green)) {
                     types[i][j] = PointType.station;
                 } else if (color.equals(Color.magenta)) {
-                    if (touchPoint)
-                        throw new RuntimeException("Só é permitido um touch point por mapa");
-                    touchPoint = true;
+                    touchPoints++;
                     types[i][j] = PointType.touch_point;
                 } else {
                     throw new RuntimeException("Cor desconhecida no mapa: " + color.toString());
@@ -29,8 +27,8 @@ public class TypeScanner {
             }
         }
 
-        if (!touchPoint)
-            throw new RuntimeException("Nenhum touch point encontrado");
+        if (touchPoints != 1)
+            throw new RuntimeException("O Mapa deve ter exatamente um touch point");
 
         return types;
     }
