@@ -51,7 +51,7 @@ public class Main extends Thread {
 
             if (population.hasAnySuccess()) {
                 try {
-                    Thread.sleep(5000);
+                    Thread.sleep((10 - velocity) * 1000 / 2);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                     System.exit(1);

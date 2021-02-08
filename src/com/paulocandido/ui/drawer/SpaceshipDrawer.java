@@ -11,18 +11,26 @@ import java.util.Objects;
 public class SpaceshipDrawer {
 
     private Population population;
+    private int width;
+    private int height;
+
     private Image spaceshipRedImage;
     private Image spaceshipBlackImage;
     private Image spaceshipTransparentImage;
     private Image fireBlackImage;
+    private Image fireRedImage;
     private Image fireTransparentImage;
 
-    public SpaceshipDrawer(Population population) throws IOException {
+    public SpaceshipDrawer(Population population, int width, int height) throws IOException {
         this.population = population;
+        this.width = width;
+        this.height = height;
+
         this.spaceshipRedImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("spaceship-red.png")));
         this.spaceshipBlackImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("spaceship-black.png")));
         this.spaceshipTransparentImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("spaceship-transp.png")));
-        this.fireBlackImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("fire.png")));
+        this.fireBlackImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("fire-black.png")));
+        this.fireRedImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("fire-red.png")));
         this.fireTransparentImage = ImageIO.read(Objects.requireNonNull(getClass().getClassLoader().getResource("fire-transp.png")));
     }
 
@@ -34,6 +42,7 @@ public class SpaceshipDrawer {
         for (Spaceship spaceship : population.getSnapshot()) {
             drawSpaceship(canvas, spaceship, SpaceshipColor.transparent);
         }
+
         if (population.getLastBest() != null)
             drawSpaceship(canvas, population.getLastBest(), SpaceshipColor.red);
     }
@@ -68,7 +77,8 @@ public class SpaceshipDrawer {
 
         if (spaceship.isJetting()) {
             var fireImage = switch (color) {
-                case red, black -> fireBlackImage;
+                case black -> fireBlackImage;
+                case red -> fireRedImage;
                 case transparent -> fireTransparentImage;
             };
 

@@ -6,8 +6,6 @@ import com.paulocandido.ui.drawer.MoonDrawer;
 import com.paulocandido.ui.drawer.SpaceshipDrawer;
 
 import javax.swing.*;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
@@ -43,8 +41,8 @@ public class UI implements Runnable, WindowListener {
 
         frame.pack();
 
+        spaceshipDrawer = new SpaceshipDrawer(population, this.width, this.height);
         moonDrawer = new MoonDrawer(moon, this.width, this.height);
-        spaceshipDrawer = new SpaceshipDrawer(population);
 
         new Thread(this).start();
 
