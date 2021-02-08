@@ -168,7 +168,7 @@ public class Spaceship {
         var vyNorm = Math.abs(vy / MAX_XY_VELOCITY);
         var vrNorm = Math.abs(vr / MAX_R_VELOCITY);
 
-        this.fitness = (1 - distNorm) * 4 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm);
+        this.fitness = (1 - distNorm) * 6 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm);
 
         SpaceshipPoints.Calculated[] points = getPoints();
         var touchedStation = false;
