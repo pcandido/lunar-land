@@ -19,18 +19,21 @@ public class Population {
     private int generation;
     private List<Spaceship> spaceships;
     private Spaceship lastBest;
-    private String trainedFileName;
+    private final String trainedFileName;
 
     public Population(Moon moon, String trainedFileName) {
         this.generation = 1;
-        this.spaceships = IntStream.range(0, Config.POPULATION_SIZE).mapToObj(a -> new Spaceship(moon)).collect(Collectors.toList());
         this.trainedFileName = trainedFileName;
 
         try {
             var loadedBestNeuralNetwork = NeuralNetwork.load(FileUtils.readFile(trainedFileName));
-            spaceships.set(0, new Spaceship(moon, loadedBestNeuralNetwork));
+            var loadedSpaceship = new Spaceship(moon, loadedBestNeuralNetwork);
+            this.spaceships = IntStream.range(0, Config.POPULATION_SIZE - 1).mapToObj(a -> loadedSpaceship.clone(moon)).collect(Collectors.toList());
+            RandomMutations.mutate(this.spaceships);
+            this.spaceships.add(0, loadedSpaceship);
         } catch (Exception e) {
             System.out.println("No state to restore");
+            this.spaceships = IntStream.range(0, Config.POPULATION_SIZE).mapToObj(a -> new Spaceship(moon)).collect(Collectors.toList());
         }
     }
 
