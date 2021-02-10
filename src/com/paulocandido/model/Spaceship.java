@@ -137,9 +137,6 @@ public class Spaceship {
         };
     }
 
-    public static long t1 = 0;
-    public static long t2 = 0;
-
     public void update(Moon moon) {
         if (status != Status.active) return;
 
