@@ -1,5 +1,6 @@
 package com.paulocandido.ui.drawer;
 
+import com.paulocandido.model.Moon;
 import com.paulocandido.model.Population;
 import com.paulocandido.model.Spaceship;
 
@@ -10,19 +11,21 @@ import java.util.Objects;
 
 public class SpaceshipDrawer {
 
-    private Population population;
-    private int width;
-    private int height;
+    private final Population population;
+    private final Moon moon;
+    private final int width;
+    private final int height;
 
-    private Image spaceshipRedImage;
-    private Image spaceshipBlackImage;
-    private Image spaceshipTransparentImage;
-    private Image fireBlackImage;
-    private Image fireRedImage;
-    private Image fireTransparentImage;
+    private final Image spaceshipRedImage;
+    private final Image spaceshipBlackImage;
+    private final Image spaceshipTransparentImage;
+    private final Image fireBlackImage;
+    private final Image fireRedImage;
+    private final Image fireTransparentImage;
 
-    public SpaceshipDrawer(Population population, int width, int height) throws IOException {
+    public SpaceshipDrawer(Population population, Moon moon, int width, int height) throws IOException {
         this.population = population;
+        this.moon = moon;
         this.width = width;
         this.height = height;
 
@@ -40,14 +43,30 @@ public class SpaceshipDrawer {
 
     public void draw(Graphics2D canvas) {
         for (Spaceship spaceship : population.getSnapshot()) {
-            drawSpaceship(canvas, spaceship, SpaceshipColor.transparent);
+            drawSpaceship(canvas, spaceship, SpaceshipColor.transparent, false);
         }
 
         if (population.getLastBest() != null)
-            drawSpaceship(canvas, population.getLastBest(), SpaceshipColor.red);
+            drawSpaceship(canvas, population.getLastBest(), SpaceshipColor.red, true);
     }
 
-    private void drawSpaceship(Graphics2D canvas, Spaceship spaceship, SpaceshipColor color) {
+    private void drawObstacle(Graphics2D canvas, Spaceship spaceship, double x, double y) {
+        canvas.drawLine(
+                toInt(spaceship.getX()),
+                toInt(spaceship.getY()),
+                toInt(x),
+                toInt(y)
+        );
+
+        canvas.fillOval(
+                toInt(x) - 3,
+                toInt(y) - 3,
+                6,
+                6
+        );
+    }
+
+    private void drawSpaceship(Graphics2D canvas, Spaceship spaceship, SpaceshipColor color, boolean drawObstacles) {
         if (spaceship.getStatus() == Spaceship.Status.fail) return;
 
         double x = spaceship.getX();
@@ -97,6 +116,21 @@ public class SpaceshipDrawer {
         }
 
         canvas.rotate(Math.toRadians(r * -1), x, y);
+
+        if (drawObstacles) {
+            canvas.setColor(Color.cyan);
+            var obstacles = moon.getObstacles((int) spaceship.getX(), (int) spaceship.getY());
+
+            drawObstacle(canvas, spaceship, spaceship.getX(), spaceship.getY() - obstacles[0]);
+            drawObstacle(canvas, spaceship, spaceship.getX() + obstacles[1], spaceship.getY() - obstacles[1]);
+            drawObstacle(canvas, spaceship, spaceship.getX() + obstacles[2], spaceship.getY());
+            drawObstacle(canvas, spaceship, spaceship.getX() + obstacles[3], spaceship.getY() + obstacles[3]);
+            drawObstacle(canvas, spaceship, spaceship.getX(), spaceship.getY() + obstacles[4]);
+            drawObstacle(canvas, spaceship, spaceship.getX() - obstacles[5], spaceship.getY() + obstacles[5]);
+            drawObstacle(canvas, spaceship, spaceship.getX() - obstacles[6], spaceship.getY());
+            drawObstacle(canvas, spaceship, spaceship.getX() - obstacles[7], spaceship.getY() - obstacles[7]);
+
+        }
     }
 
     private enum SpaceshipColor {

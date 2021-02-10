@@ -44,7 +44,7 @@ public class Spaceship {
     NeuralNetwork neuralNetwork;
 
     public Spaceship(Moon moon) {
-        this(moon, new NeuralNetwork(4 + points.length, 3, 15));
+        this(moon, new NeuralNetwork(4 + 8 + points.length, 3, 20, 20));
     }
 
     public Spaceship(Moon moon, NeuralNetwork neuralNetwork) {
@@ -56,7 +56,7 @@ public class Spaceship {
         this.vy = 0;
         this.vr = 0;
         this.jet = false;
-        this.fuel = 1500;
+        this.fuel = 2000;
         this.fitness = 0;
         this.neuralNetwork = neuralNetwork;
     }
@@ -85,6 +85,10 @@ public class Spaceship {
         return status;
     }
 
+    public double getFuel() {
+        return fuel;
+    }
+
     public boolean isJetting() {
         return jet;
     }
@@ -109,6 +113,33 @@ public class Spaceship {
         }
     }
 
+    private boolean[] think(Moon moon) {
+        SpaceshipPoints.Calculated[] oldPoints = getPoints();
+
+        double[] input = new double[oldPoints.length + 4 + 8];
+        input[0] = vx;
+        input[1] = vy;
+        input[2] = vr;
+        input[3] = getRNorm();
+
+        for (int i = 0; i < oldPoints.length; i++) {
+            input[i + 4] = moon.getDistance(oldPoints[i].getIntX(), oldPoints[i].getIntY());
+        }
+
+        System.arraycopy(moon.getObstacles((int) x, (int) y), 0, input, oldPoints.length + 4, 8);
+
+        double[] result = this.neuralNetwork.calculate(input);
+
+        return new boolean[]{
+                result[0] > 0,
+                result[1] > 0,
+                result[2] > 0
+        };
+    }
+
+    public static long t1 = 0;
+    public static long t2 = 0;
+
     public void update(Moon moon) {
         if (status != Status.active) return;
 
@@ -117,33 +148,21 @@ public class Spaceship {
         vr *= 1 - moon.getFriction();
 
         jet = false;
+        boolean[] thought = think(moon);
 
-        SpaceshipPoints.Calculated[] oldPoints = getPoints();
-
-        double[] input = new double[oldPoints.length + 4];
-        input[0] = vx;
-        input[1] = vy;
-        input[2] = vr;
-        input[3] = getRNorm();
-        for (int i = 0; i < oldPoints.length; i++) {
-            input[i + 4] = moon.getDistance(oldPoints[i].getIntX(), oldPoints[i].getIntY());
-        }
-
-        double[] result = this.neuralNetwork.calculate(input);
-
-        if (result[0] > 0 && fuel >= 1) {
+        if (thought[0] && fuel >= 1) {
             //main
-            this.vx += Math.cos(Math.toRadians(this.r) - 90) * 0.006;
-            this.vy += Math.sin(Math.toRadians(this.r) - 90) * 0.006;
+            this.vx += Math.cos(Math.toRadians(this.r - 90)) * 0.006;
+            this.vy += Math.sin(Math.toRadians(this.r - 90)) * 0.006;
             this.jet = true;
             this.fuel -= 1;
         }
-        if (result[1] > 0 && fuel >= 0.1) {
+        if (thought[1] && fuel >= 0.1) {
             //right
             this.vr += 0.006;
             this.fuel -= 0.1;
         }
-        if (result[2] > 0 && fuel >= 0.1) {
+        if (thought[2] && fuel >= 0.1) {
             //left
             this.vr -= 0.006;
             this.fuel -= 0.1;
@@ -162,13 +181,13 @@ public class Spaceship {
 
         this.dist = moon.getDistance((int) x, (int) y);
 
-        var distNorm = Math.abs(dist / moon.getMaxDistance());
+        var distNorm = Math.abs(dist / moon.getInitialDistance());
         var rNorm = getRNorm();
         var vxNorm = Math.abs(vx / MAX_XY_VELOCITY);
         var vyNorm = Math.abs(vy / MAX_XY_VELOCITY);
         var vrNorm = Math.abs(vr / MAX_R_VELOCITY);
 
-        this.fitness = (1 - distNorm) * 6 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm);
+        this.fitness = Math.max(0, (1 - distNorm) * 96 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm));
 
         SpaceshipPoints.Calculated[] points = getPoints();
         var touchedStation = false;

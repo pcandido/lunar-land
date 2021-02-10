@@ -41,7 +41,7 @@ public class UI implements Runnable, WindowListener {
 
         frame.pack();
 
-        spaceshipDrawer = new SpaceshipDrawer(population, this.width, this.height);
+        spaceshipDrawer = new SpaceshipDrawer(population, moon, this.width, this.height);
         moonDrawer = new MoonDrawer(moon, this.width, this.height);
 
         new Thread(this).start();
