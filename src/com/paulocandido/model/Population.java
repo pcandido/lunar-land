@@ -21,18 +21,17 @@ public class Population {
     private Spaceship lastBest;
     private String trainedFileName;
 
-    public Population(Moon moon, int size, double noise, double initialFuel, String trainedFileName) {
+    public Population(Moon moon, String trainedFileName) {
         this.generation = 1;
-        this.spaceships = IntStream.range(0, size).mapToObj(a -> new Spaceship(moon)).collect(Collectors.toList());
+        this.spaceships = IntStream.range(0, Config.POPULATION_SIZE).mapToObj(a -> new Spaceship(moon)).collect(Collectors.toList());
         this.trainedFileName = trainedFileName;
 
         try {
             var loadedBestNeuralNetwork = NeuralNetwork.load(FileUtils.readFile(trainedFileName));
             spaceships.set(0, new Spaceship(moon, loadedBestNeuralNetwork));
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.println("No state to restore");
         }
-
     }
 
     public List<Spaceship> getSnapshot() {
@@ -53,7 +52,7 @@ public class Population {
         return this.spaceships.stream().anyMatch(a -> a.getStatus() == Spaceship.Status.active);
     }
 
-    public boolean hasAnySuccess(){
+    public boolean hasAnySuccess() {
         return this.spaceships.stream().anyMatch(a -> a.getStatus() == Spaceship.Status.success);
     }
 
