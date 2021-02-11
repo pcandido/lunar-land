@@ -55,7 +55,7 @@ public class Main extends Thread {
             }
 
             var best = population.getBest();
-            System.out.printf("%4d :: %3.6f :: %6d\n", population.getGeneration(), best.getFitness(), end-start);
+            System.out.printf("%4d :: %3.6f :: %6d\n", population.getGeneration(), best.getFitness(), end - start);
 
             population.nextGeneration(moon);
         }

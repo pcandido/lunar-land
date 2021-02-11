@@ -4,7 +4,6 @@ import com.paulocandido.model.Moon;
 import com.paulocandido.model.Spaceship;
 
 import java.util.List;
-import java.util.function.Function;
 
 public class ObstacleCalculator {
 
@@ -14,13 +13,13 @@ public class ObstacleCalculator {
         this.moon = moon;
     }
 
-    private Obstacle getObstacle(int x, int y, Function<Integer, Integer> nextX, Function<Integer, Integer> nextY) {
+    private Obstacle getObstacle(int x, int y, int xIncrement, int yIncrement) {
         int dist = 0;
         int ix = x;
         int iy = y;
         while (true) {
-            ix = nextX.apply(ix);
-            iy = nextY.apply(iy);
+            ix += xIncrement;
+            iy += yIncrement;
             dist++;
 
             if (moon.getType(ix, iy) != PointType.air) {
@@ -34,14 +33,14 @@ public class ObstacleCalculator {
         int y = (int) spaceship.getY();
 
         return List.of(
-                getObstacle(x, y, a -> a, a -> a - 1),
-                getObstacle(x, y, a -> a + 1, a -> a - 1),
-                getObstacle(x, y, a -> a + 1, a -> a),
-                getObstacle(x, y, a -> a + 1, a -> a + 1),
-                getObstacle(x, y, a -> a, a -> a + 1),
-                getObstacle(x, y, a -> a - 1, a -> a + 1),
-                getObstacle(x, y, a -> a - 1, a -> a),
-                getObstacle(x, y, a -> a - 1, a -> a - 1)
+                getObstacle(x, y, 0, -1),
+                getObstacle(x, y, 1, -1),
+                getObstacle(x, y, 1, 0),
+                getObstacle(x, y, 1, 1),
+                getObstacle(x, y, 0, 1),
+                getObstacle(x, y, -1, 1),
+                getObstacle(x, y, -1, 0),
+                getObstacle(x, y, -1, -1)
         );
     }
 }
