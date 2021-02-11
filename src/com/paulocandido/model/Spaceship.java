@@ -6,8 +6,6 @@ import com.paulocandido.model.moon.PointType;
 import com.paulocandido.model.spaceship.SpaceshipPoint;
 import com.paulocandido.model.spaceship.SpaceshipPointCalculator;
 
-import java.util.List;
-
 public class Spaceship {
 
     public static final double WIDTH = 74;
@@ -34,8 +32,8 @@ public class Spaceship {
 
     private double dist;
     private double fitness;
-    private List<SpaceshipPoint> points;
-    private List<Obstacle> obstacles;
+    private SpaceshipPoint[] points;
+    private Obstacle[] obstacles;
     NeuralNetwork neuralNetwork;
 
     public Spaceship(Moon moon) {
@@ -53,9 +51,12 @@ public class Spaceship {
         this.jet = false;
         this.fuel = 3000;
         this.fitness = 0;
-        this.points = SpaceshipPointCalculator.calculate(this);
-        this.obstacles = moon.getObstacleCalculator().calculate(this);
+        this.points = SpaceshipPointCalculator.aloc();
+        this.obstacles = moon.getObstacleCalculator().aloc();
         this.neuralNetwork = neuralNetwork;
+
+        SpaceshipPointCalculator.calculate(this);
+        moon.getObstacleCalculator().calculate(this);
     }
 
     public Spaceship clone(Moon moon) {
@@ -90,8 +91,12 @@ public class Spaceship {
         return fitness;
     }
 
-    public List<Obstacle> getObstacles() {
+    public Obstacle[] getObstacles() {
         return obstacles;
+    }
+
+    public SpaceshipPoint[] getPoints() {
+        return points;
     }
 
     public NeuralNetwork getNeuralNetwork() {
@@ -172,8 +177,8 @@ public class Spaceship {
 
         this.dist = moon.getDistance((int) x, (int) y);
 
-        this.points = SpaceshipPointCalculator.calculate(this);
-        this.obstacles = moon.getObstacleCalculator().calculate(this);
+        SpaceshipPointCalculator.calculate(this);
+        moon.getObstacleCalculator().calculate(this);
 
         var distNorm = Math.abs(dist / moon.getInitialDistance());
         var rNorm = getRNorm();
