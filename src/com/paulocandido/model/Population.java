@@ -45,6 +45,10 @@ public class Population {
         return lastBest;
     }
 
+    public int getGeneration() {
+        return generation;
+    }
+
     public void update(Moon moon) {
         spaceships.stream().parallel().forEach(a -> a.update(moon));
         if (lastBest != null)
@@ -59,8 +63,12 @@ public class Population {
         return this.spaceships.stream().anyMatch(a -> a.getStatus() == Spaceship.Status.success);
     }
 
+    public Spaceship getBest(){
+        return spaceships.stream().max(Comparator.comparing(Spaceship::getFitness)).orElseThrow();
+    }
+
     public void nextGeneration(Moon moon) {
-        Spaceship best = spaceships.stream().max(Comparator.comparing(Spaceship::getFitness)).orElseThrow();
+        Spaceship best = getBest();
         lastBest = best.clone(moon);
 
         try {
@@ -69,8 +77,6 @@ public class Population {
             e.printStackTrace();
             System.exit(1);
         }
-
-        System.out.printf("%d: %.6f\n", generation, best.getFitness());
 
         List<Spaceship> newGen = Tournament
                 .draw(spaceships, Spaceship::getFitness, Config.POPULATION_SIZE / 2 - 1, false)

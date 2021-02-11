@@ -32,6 +32,7 @@ public class Main extends Thread {
     @SuppressWarnings("BusyWait")
     public void run() {
         while (true) {
+            var start = System.currentTimeMillis();
             while (population.hasAnyActive()) {
                 population.update(moon);
 
@@ -42,6 +43,7 @@ public class Main extends Thread {
                     System.exit(1);
                 }
             }
+            var end = System.currentTimeMillis();
 
             if (population.hasAnySuccess()) {
                 try {
@@ -51,6 +53,9 @@ public class Main extends Thread {
                     System.exit(1);
                 }
             }
+
+            var best = population.getBest();
+            System.out.printf("%4d :: %3.6f :: %6d\n", population.getGeneration(), best.getFitness(), end-start);
 
             population.nextGeneration(moon);
         }
