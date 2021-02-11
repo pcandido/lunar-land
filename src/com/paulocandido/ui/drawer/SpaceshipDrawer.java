@@ -119,17 +119,10 @@ public class SpaceshipDrawer {
 
         if (drawObstacles) {
             canvas.setColor(Color.cyan);
-            var obstacles = moon.getObstacles((int) spaceship.getX(), (int) spaceship.getY());
 
-            drawObstacle(canvas, spaceship, spaceship.getX(), spaceship.getY() - obstacles[0]);
-            drawObstacle(canvas, spaceship, spaceship.getX() + obstacles[1], spaceship.getY() - obstacles[1]);
-            drawObstacle(canvas, spaceship, spaceship.getX() + obstacles[2], spaceship.getY());
-            drawObstacle(canvas, spaceship, spaceship.getX() + obstacles[3], spaceship.getY() + obstacles[3]);
-            drawObstacle(canvas, spaceship, spaceship.getX(), spaceship.getY() + obstacles[4]);
-            drawObstacle(canvas, spaceship, spaceship.getX() - obstacles[5], spaceship.getY() + obstacles[5]);
-            drawObstacle(canvas, spaceship, spaceship.getX() - obstacles[6], spaceship.getY());
-            drawObstacle(canvas, spaceship, spaceship.getX() - obstacles[7], spaceship.getY() - obstacles[7]);
-
+            for (var obstacle : spaceship.getObstacles()) {
+                drawObstacle(canvas, spaceship, obstacle.x(), obstacle.y());
+            }
         }
     }
 

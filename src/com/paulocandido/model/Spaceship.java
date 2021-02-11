@@ -1,30 +1,23 @@
 package com.paulocandido.model;
 
 import com.paulocandido.ia.NeuralNetwork;
+import com.paulocandido.model.moon.Obstacle;
 import com.paulocandido.model.moon.PointType;
-import com.paulocandido.model.spaceship.SpaceshipPoints;
+import com.paulocandido.model.spaceship.SpaceshipPoint;
+import com.paulocandido.model.spaceship.SpaceshipPointCalculator;
+
+import java.util.List;
 
 public class Spaceship {
-
-    private static final SpaceshipPoints[] points = {
-            new SpaceshipPoints(-0.5, 0.5, true),
-            new SpaceshipPoints(0, 0.5, true),
-            new SpaceshipPoints(0.5, 0.5, true),
-            new SpaceshipPoints(0.44, 0.19, false),
-            new SpaceshipPoints(0.28, -0.17, false),
-            new SpaceshipPoints(0.33, -0.44, false),
-            new SpaceshipPoints(0, -0.5, false),
-            new SpaceshipPoints(-0.20, -0.49, false),
-            new SpaceshipPoints(-0.28, -0.17, false),
-            new SpaceshipPoints(-0.44, 0.19, false)
-    };
-    private static final SpaceshipPoints distancePoint = points[1];
 
     public static final double WIDTH = 74;
     public static final double HEIGHT = 64;
 
     public static final double MAX_XY_VELOCITY = 3;
     public static final double MAX_R_VELOCITY = 2;
+
+    private static final int ANN_INPUT_SIZE = 22;
+    private static final int ANN_OUTPUT_SIZE = 3;
 
     private Status status;
 
@@ -41,10 +34,12 @@ public class Spaceship {
 
     private double dist;
     private double fitness;
+    private List<SpaceshipPoint> points;
+    private List<Obstacle> obstacles;
     NeuralNetwork neuralNetwork;
 
     public Spaceship(Moon moon) {
-        this(moon, new NeuralNetwork(4 + 8 + points.length, 3, 20, 20));
+        this(moon, new NeuralNetwork(ANN_INPUT_SIZE, ANN_OUTPUT_SIZE, 20, 20));
     }
 
     public Spaceship(Moon moon, NeuralNetwork neuralNetwork) {
@@ -56,8 +51,10 @@ public class Spaceship {
         this.vy = 0;
         this.vr = 0;
         this.jet = false;
-        this.fuel = 2000;
+        this.fuel = 3000;
         this.fitness = 0;
+        this.points = SpaceshipPointCalculator.calculate(this);
+        this.obstacles = moon.getObstacleCalculator().calculate(this);
         this.neuralNetwork = neuralNetwork;
     }
 
@@ -85,20 +82,16 @@ public class Spaceship {
         return status;
     }
 
-    public double getFuel() {
-        return fuel;
-    }
-
     public boolean isJetting() {
         return jet;
     }
 
-    public double getDist() {
-        return dist;
-    }
-
     public double getFitness() {
         return fitness;
+    }
+
+    public List<Obstacle> getObstacles() {
+        return obstacles;
     }
 
     public NeuralNetwork getNeuralNetwork() {
@@ -114,19 +107,20 @@ public class Spaceship {
     }
 
     private boolean[] think(Moon moon) {
-        SpaceshipPoints.Calculated[] oldPoints = getPoints();
 
-        double[] input = new double[oldPoints.length + 4 + 8];
-        input[0] = vx;
-        input[1] = vy;
-        input[2] = vr;
-        input[3] = getRNorm();
+        var input = new double[ANN_INPUT_SIZE];
+        var i = 0;
 
-        for (int i = 0; i < oldPoints.length; i++) {
-            input[i + 4] = moon.getDistance(oldPoints[i].getIntX(), oldPoints[i].getIntY());
+        input[i++] = vx;
+        input[i++] = vy;
+        input[i++] = vr;
+        input[i++] = getRNorm();
+        for (var point : points) {
+            input[i++] = moon.getDistance((int) point.x(), (int) point.y());
         }
-
-        System.arraycopy(moon.getObstacles((int) x, (int) y), 0, input, oldPoints.length + 4, 8);
+        for (var obstacle : obstacles) {
+            input[i++] = obstacle.dist();
+        }
 
         double[] result = this.neuralNetwork.calculate(input);
 
@@ -178,6 +172,9 @@ public class Spaceship {
 
         this.dist = moon.getDistance((int) x, (int) y);
 
+        this.points = SpaceshipPointCalculator.calculate(this);
+        this.obstacles = moon.getObstacleCalculator().calculate(this);
+
         var distNorm = Math.abs(dist / moon.getInitialDistance());
         var rNorm = getRNorm();
         var vxNorm = Math.abs(vx / MAX_XY_VELOCITY);
@@ -186,19 +183,18 @@ public class Spaceship {
 
         this.fitness = Math.max(0, (1 - distNorm) * 96 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm));
 
-        SpaceshipPoints.Calculated[] points = getPoints();
         var touchedStation = false;
 
-        for (SpaceshipPoints.Calculated point : points) {
-            int px = point.getIntX();
-            int py = point.getIntY();
+        for (var point : points) {
+            int px = point.intX();
+            int py = point.intY();
 
             switch (moon.getType(px, py)) {
                 case air -> {
                 }
                 case out, ground -> status = Status.fail;
                 case station -> {
-                    if (point.isLandingGear())
+                    if (point.landingGear())
                         touchedStation = true;
                     else
                         status = Status.fail;
@@ -219,18 +215,6 @@ public class Spaceship {
         if (status != Status.active) {
             jet = false;
         }
-    }
-
-    public SpaceshipPoints.Calculated[] getPoints() {
-        var calculated = new SpaceshipPoints.Calculated[points.length];
-        for (int i = 0; i < points.length; i++) {
-            calculated[i] = points[i].calculate(this);
-        }
-        return calculated;
-    }
-
-    public SpaceshipPoints.Calculated getDistancePoint() {
-        return distancePoint.calculate(this);
     }
 
     public enum Status {
