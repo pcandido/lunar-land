@@ -8,7 +8,7 @@ public class SeededRandom {
 
     public static Random get() {
         if (random == null) {
-            random = new Random(1);
+            random = new Random(2);
         }
 
         return random;

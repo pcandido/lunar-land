@@ -44,12 +44,12 @@ public class Spaceship {
         this.status = Status.active;
         this.x = moon.getStartX();
         this.y = moon.getStartY();
-        this.r = 0;
+        this.r = 45;
         this.vx = 0;
         this.vy = 0;
         this.vr = 0;
         this.jet = false;
-        this.fuel = 3000;
+        this.fuel = 5000;
         this.fitness = 0;
         this.points = SpaceshipPointCalculator.aloc();
         this.obstacles = moon.getObstacleCalculator().aloc();
