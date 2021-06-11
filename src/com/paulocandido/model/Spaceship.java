@@ -3,6 +3,7 @@ package com.paulocandido.model;
 import com.paulocandido.ia.NeuralNetwork;
 import com.paulocandido.model.moon.Obstacle;
 import com.paulocandido.model.moon.PointType;
+import com.paulocandido.model.spaceship.SpaceshipDirectionCalculator;
 import com.paulocandido.model.spaceship.SpaceshipPoint;
 import com.paulocandido.model.spaceship.SpaceshipPointCalculator;
 
@@ -14,7 +15,7 @@ public class Spaceship {
     public static final double MAX_XY_VELOCITY = 3;
     public static final double MAX_R_VELOCITY = 2;
 
-    private static final int ANN_INPUT_SIZE = 22;
+    private static final int ANN_INPUT_SIZE = 13;
     private static final int ANN_OUTPUT_SIZE = 3;
 
     private Status status;
@@ -35,16 +36,17 @@ public class Spaceship {
     private SpaceshipPoint[] points;
     private Obstacle[] obstacles;
     NeuralNetwork neuralNetwork;
+    SpaceshipDirectionCalculator directionCalculator;
 
     public Spaceship(Moon moon) {
-        this(moon, new NeuralNetwork(ANN_INPUT_SIZE, ANN_OUTPUT_SIZE, 20, 20));
+        this(moon, new NeuralNetwork(ANN_INPUT_SIZE, ANN_OUTPUT_SIZE, 15, 10));
     }
 
     public Spaceship(Moon moon, NeuralNetwork neuralNetwork) {
         this.status = Status.active;
         this.x = moon.getStartX();
         this.y = moon.getStartY();
-        this.r = 45;
+        this.r = -5;
         this.vx = 0;
         this.vy = 0;
         this.vr = 0;
@@ -55,6 +57,7 @@ public class Spaceship {
         this.obstacles = moon.getObstacleCalculator().aloc();
         this.neuralNetwork = neuralNetwork;
 
+        directionCalculator = new SpaceshipDirectionCalculator(this, moon);
         SpaceshipPointCalculator.calculate(this);
         moon.getObstacleCalculator().calculate(this);
     }
@@ -120,9 +123,7 @@ public class Spaceship {
         input[i++] = vy;
         input[i++] = vr;
         input[i++] = getRNorm();
-        for (var point : points) {
-            input[i++] = moon.getDistance((int) point.x(), (int) point.y());
-        }
+        input[i++] = directionCalculator.calculate();
         for (var obstacle : obstacles) {
             input[i++] = obstacle.dist();
         }
@@ -180,14 +181,6 @@ public class Spaceship {
         SpaceshipPointCalculator.calculate(this);
         moon.getObstacleCalculator().calculate(this);
 
-        var distNorm = Math.abs(dist / moon.getInitialDistance());
-        var rNorm = getRNorm();
-        var vxNorm = Math.abs(vx / MAX_XY_VELOCITY);
-        var vyNorm = Math.abs(vy / MAX_XY_VELOCITY);
-        var vrNorm = Math.abs(vr / MAX_R_VELOCITY);
-
-        this.fitness = Math.max(0, (1 - distNorm) * 96 + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm));
-
         var touchedStation = false;
 
         for (var point : points) {
@@ -209,16 +202,31 @@ public class Spaceship {
             if (moon.getType(px, py) != PointType.air) {
                 status = Status.fail;
             }
-        }
 
-        if (touchedStation) {
-            if (r > 3 && r < 357) status = Status.fail;
-            else if (vx > 0.1 || vy > 0.1 || vr > 0.1) status = Status.fail;
-            else status = Status.success;
-        }
+            if (touchedStation) {
+                if (r > 3 && r < 357) status = Status.fail;
+                else if (vx > 0.1 || vy > 0.1 || vr > 0.1) status = Status.fail;
+                else status = Status.success;
+            }
 
-        if (status != Status.active) {
-            jet = false;
+            if (status != Status.active) {
+                jet = false;
+            }
+
+            var distNorm = Math.abs(dist / moon.getInitialDistance());
+            var rNorm = getRNorm();
+            var vxNorm = Math.abs(vx / MAX_XY_VELOCITY);
+            var vyNorm = Math.abs(vy / MAX_XY_VELOCITY);
+            var vrNorm = Math.abs(vr / MAX_R_VELOCITY);
+
+            this.fitness = Math.max(0,
+                    (1 - distNorm) * 10 +
+                            (1 - rNorm) +
+                            (1 - vxNorm) +
+                            (1 - vyNorm) +
+                            (1 - vrNorm) +
+                            (status == Status.success ? 10 : 0)
+            );
         }
     }
 

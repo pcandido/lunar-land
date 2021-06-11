@@ -2,6 +2,7 @@ package com.paulocandido;
 
 import com.paulocandido.model.Moon;
 import com.paulocandido.model.Population;
+import com.paulocandido.model.Spaceship;
 import com.paulocandido.ui.UI;
 
 import java.io.IOException;
@@ -55,7 +56,7 @@ public class Main extends Thread {
             }
 
             var best = population.getBest();
-            System.out.printf("%4d :: %3.6f :: %6d\n", population.getGeneration(), best.getFitness(), end - start);
+            System.out.printf("%4d :: %3.6f :: %6d :: %s\n", population.getGeneration(), best.getFitness(), end - start, best.getStatus() == Spaceship.Status.success ? "SUCCESS" : "FAIL");
 
             population.nextGeneration(moon);
         }

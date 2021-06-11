@@ -6,6 +6,6 @@ public class MultiplicationMutation implements Mutation {
 
     @Override
     public double mutate(double value) {
-        return value * (SeededRandom.get().nextDouble() * 4 - 2);
+        return value * SeededRandom.get().nextGaussian();
     }
 }

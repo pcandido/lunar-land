@@ -117,7 +117,7 @@ public class SpaceshipDrawer {
 
         canvas.rotate(Math.toRadians(r * -1), x, y);
 
-        if (drawObstacles) {
+        if (drawObstacles && spaceship.getStatus() == Spaceship.Status.active) {
             canvas.setColor(Color.cyan);
 
             for (var obstacle : spaceship.getObstacles()) {

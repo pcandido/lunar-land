@@ -6,7 +6,6 @@ import javax.imageio.ImageIO;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Objects;
-import java.util.function.Function;
 
 public class Moon {
 
@@ -20,6 +19,7 @@ public class Moon {
     private final PointType[][] types;
     private final int[][] distances;
     private final int maxDistance;
+    private final int maxObstacleDistance;
     private final int initialDistance;
     private final ObstacleCalculator obstacleCalculator;
 
@@ -47,8 +47,9 @@ public class Moon {
             }
         }
         this.maxDistance = maxDistance;
+        this.maxObstacleDistance = (int) Math.ceil(Math.sqrt(Math.pow(width, 2) + Math.pow(height, 2)));
         this.initialDistance = distances[startX][startY];
-        this.obstacleCalculator=new ObstacleCalculator(this);
+        this.obstacleCalculator = new ObstacleCalculator(this);
     }
 
     public URL getImageFile() {
@@ -83,6 +84,10 @@ public class Moon {
         return maxDistance;
     }
 
+    public int getMaxObstacleDistance() {
+        return this.maxObstacleDistance;
+    }
+
     public int getInitialDistance() {
         return initialDistance;
     }
@@ -98,7 +103,6 @@ public class Moon {
         if (y >= height) return PointType.out;
         return types[x][y];
     }
-
 
 
     public double getDistance(int x, int y) {

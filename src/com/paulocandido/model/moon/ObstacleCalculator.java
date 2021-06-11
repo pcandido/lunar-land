@@ -1,5 +1,6 @@
 package com.paulocandido.model.moon;
 
+import com.paulocandido.Config;
 import com.paulocandido.model.Moon;
 import com.paulocandido.model.Spaceship;
 
@@ -11,19 +12,44 @@ public class ObstacleCalculator {
         this.moon = moon;
     }
 
-    private Obstacle getObstacle(int x, int y, int xIncrement, int yIncrement) {
-        int dist = 0;
-        int ix = x;
-        int iy = y;
-        while (true) {
-            ix += xIncrement;
-            iy += yIncrement;
-            dist++;
+    private Obstacle getObstacleBinarySearch(double x, double y, double r, int distDown, int distUp) {
+        double radR = Math.toRadians(r);
+        int dist = ((distUp - distDown) / 2) + distDown;
 
-            if (moon.getType(ix, iy) != PointType.air) {
-                return new Obstacle(dist, ix, iy);
+        int ox = (int) Math.round(Math.cos(radR) * dist + x);
+        int oy = (int) Math.round(Math.sin(radR) * dist + y);
+
+        boolean air = moon.getType(ox, oy) == PointType.air;
+
+        if (distUp - distDown < 2) {
+            if (air)
+                return getObstacleBinarySearch(x, y, r, distDown + 1, distDown + 1);
+            else
+                return new Obstacle(dist, ox, oy);
+        }
+
+        if (air)
+            return getObstacleBinarySearch(x, y, r, dist, distUp);
+        else
+            return getObstacleBinarySearch(x, y, r, distDown, dist);
+    }
+
+    private Obstacle getObstacleHeuristic(double x, double y, double r) {
+        return getObstacleBinarySearch(x, y, r, 0, moon.getMaxObstacleDistance());
+    }
+
+    private Obstacle getObstacleDeterministic(double x, double y, double r) {
+        for (int dist = 0; dist <= moon.getMaxObstacleDistance(); dist++) {
+            double radR = Math.toRadians(r);
+
+            int ox = (int) Math.round(Math.cos(radR) * dist + x);
+            int oy = (int) Math.round(Math.sin(radR) * dist + y);
+
+            if (moon.getType(ox, oy) != PointType.air) {
+                return new Obstacle(dist, ox, oy);
             }
         }
+        throw new RuntimeException("Did not find obstacle");
     }
 
     public Obstacle[] aloc() {
@@ -31,17 +57,13 @@ public class ObstacleCalculator {
     }
 
     public void calculate(Spaceship spaceship) {
-        int x = (int) spaceship.getX();
-        int y = (int) spaceship.getY();
         var obstacles = spaceship.getObstacles();
 
-        obstacles[0] = getObstacle(x, y, 0, -1);
-        obstacles[1] = getObstacle(x, y, 1, -1);
-        obstacles[2] = getObstacle(x, y, 1, 0);
-        obstacles[3] = getObstacle(x, y, 1, 1);
-        obstacles[4] = getObstacle(x, y, 0, 1);
-        obstacles[5] = getObstacle(x, y, -1, 1);
-        obstacles[6] = getObstacle(x, y, -1, 0);
-        obstacles[7] = getObstacle(x, y, -1, -1);
+        for (int i = 0; i < 8; i++) {
+            if (Config.USE_HEURISTIC_OBSTACLE_CALCULATOR)
+                obstacles[i] = getObstacleHeuristic(spaceship.getX(), spaceship.getY(), spaceship.getR() + (i * 45));
+            else
+                obstacles[i] = getObstacleDeterministic(spaceship.getX(), spaceship.getY(), spaceship.getR() + (i * 45));
+        }
     }
 }
