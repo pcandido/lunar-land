@@ -1,7 +1,7 @@
 package com.paulocandido.ia;
 
 import com.paulocandido.ea.mutation.Mutation;
-import com.paulocandido.utils.SeededRandom;
+import com.paulocandido.utils.GARandom;
 
 public class Layer {
 
@@ -30,7 +30,7 @@ public class Layer {
     }
 
     public void mutate(Mutation mutation) {
-        perceptrons[SeededRandom.get().nextInt(perceptrons.length)].mutate(mutation);
+        perceptrons[GARandom.get().nextInt(perceptrons.length)].mutate(mutation);
     }
 
     @SuppressWarnings("MethodDoesntCallSuperMethod")

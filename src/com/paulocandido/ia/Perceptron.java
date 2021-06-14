@@ -1,7 +1,7 @@
 package com.paulocandido.ia;
 
 import com.paulocandido.ea.mutation.Mutation;
-import com.paulocandido.utils.SeededRandom;
+import com.paulocandido.utils.GARandom;
 
 public class Perceptron {
 
@@ -11,11 +11,11 @@ public class Perceptron {
 
     public Perceptron(int size, ActivationFunction activationFunction) {
         this.activationFunction = activationFunction;
-        this.bias = SeededRandom.getGeneValue();
+        this.bias = GARandom.getGeneValue();
 
         this.weights = new double[size];
         for (int i = 0; i < size; i++) {
-            this.weights[i] = SeededRandom.getGeneValue();
+            this.weights[i] = GARandom.getGeneValue();
         }
     }
 
@@ -35,7 +35,7 @@ public class Perceptron {
     }
 
     public void mutate(Mutation mutation) {
-        int gene = SeededRandom.get().nextInt(weights.length + 1);
+        int gene = GARandom.get().nextInt(weights.length + 1);
         if (gene == weights.length)
             bias = mutation.mutate(bias);
         else

@@ -1,7 +1,7 @@
 package com.paulocandido.ia;
 
 import com.paulocandido.ea.mutation.Mutation;
-import com.paulocandido.utils.SeededRandom;
+import com.paulocandido.utils.GARandom;
 
 public class NeuralNetwork {
 
@@ -42,7 +42,7 @@ public class NeuralNetwork {
     }
 
     public void mutate(Mutation mutation) {
-        int layer = SeededRandom.get().nextInt(hiddenLayers.length + 1);
+        int layer = GARandom.get().nextInt(hiddenLayers.length + 1);
         if (layer == hiddenLayers.length)
             outputLayer.mutate(mutation);
         else

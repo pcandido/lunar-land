@@ -1,6 +1,6 @@
 package com.paulocandido.ea;
 
-import com.paulocandido.utils.SeededRandom;
+import com.paulocandido.utils.GARandom;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +41,7 @@ public class Tournament {
 
     private static <T> Map<T> fight(Map<T> item1, Map<T> item2) {
         var sum = item1.fitness + item2.fitness;
-        var drown = SeededRandom.get().nextDouble() * sum;
+        var drown = GARandom.get().nextDouble() * sum;
 
         if (drown < item1.fitness)
             return item1;

@@ -30,7 +30,7 @@ public class SpaceshipDirectionCalculator {
         int bestAngle = 0;
         double bestDist = Double.POSITIVE_INFINITY;
 
-        for (int angle = 0; angle < 360; angle += 90) {
+        for (int angle = 0; angle < 360; angle += 10) {
             double dist = getDistance(angle);
             if (dist < bestDist) {
                 bestDist = dist;

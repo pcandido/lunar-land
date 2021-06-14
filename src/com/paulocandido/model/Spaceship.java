@@ -15,7 +15,7 @@ public class Spaceship {
     public static final double MAX_XY_VELOCITY = 3;
     public static final double MAX_R_VELOCITY = 2;
 
-    private static final int ANN_INPUT_SIZE = 13;
+    private static final int ANN_INPUT_SIZE = 14;
     private static final int ANN_OUTPUT_SIZE = 3;
 
     private Status status;
@@ -39,14 +39,14 @@ public class Spaceship {
     SpaceshipDirectionCalculator directionCalculator;
 
     public Spaceship(Moon moon) {
-        this(moon, new NeuralNetwork(ANN_INPUT_SIZE, ANN_OUTPUT_SIZE, 15, 10));
+        this(moon, new NeuralNetwork(ANN_INPUT_SIZE, ANN_OUTPUT_SIZE, 6, 6));
     }
 
     public Spaceship(Moon moon, NeuralNetwork neuralNetwork) {
         this.status = Status.active;
         this.x = moon.getStartX();
         this.y = moon.getStartY();
-        this.r = -5;
+        this.r = 0;
         this.vx = 0;
         this.vy = 0;
         this.vr = 0;
@@ -124,6 +124,7 @@ public class Spaceship {
         input[i++] = vr;
         input[i++] = getRNorm();
         input[i++] = directionCalculator.calculate();
+        input[i++] = dist;
         for (var obstacle : obstacles) {
             input[i++] = obstacle.dist();
         }
@@ -213,21 +214,22 @@ public class Spaceship {
                 jet = false;
             }
 
-            var distNorm = Math.abs(dist / moon.getInitialDistance());
-            var rNorm = getRNorm();
-            var vxNorm = Math.abs(vx / MAX_XY_VELOCITY);
-            var vyNorm = Math.abs(vy / MAX_XY_VELOCITY);
-            var vrNorm = Math.abs(vr / MAX_R_VELOCITY);
-
-            this.fitness = Math.max(0,
-                    (1 - distNorm) * 10 +
-                            (1 - rNorm) +
-                            (1 - vxNorm) +
-                            (1 - vyNorm) +
-                            (1 - vrNorm) +
-                            (status == Status.success ? 10 : 0)
-            );
+            this.fitness = calcFitness(moon);
         }
+    }
+
+    private double calcFitness(Moon moon) {
+        var distNorm = Math.abs(dist / moon.getInitialDistance());
+        var rNorm = getRNorm();
+        var vxNorm = Math.abs(vx / MAX_XY_VELOCITY);
+        var vyNorm = Math.abs(vy / MAX_XY_VELOCITY);
+        var vrNorm = Math.abs(vr / MAX_R_VELOCITY);
+
+        var value = ((1 - distNorm) * 4) + (1 - rNorm) + (1 - vxNorm) + (1 - vyNorm) + (1 - vrNorm);
+
+        if (status == Status.success) value += 5;
+
+        return value;
     }
 
     public enum Status {
