@@ -24,7 +24,7 @@ public class Moon {
     private final ObstacleCalculator obstacleCalculator;
 
     public Moon(String imageFileName, double gravity, double friction) throws IOException {
-        this.imageFile = Objects.requireNonNull(getClass().getClassLoader().getResource(imageFileName));
+        this.imageFile = Objects.requireNonNull(getClass().getClassLoader().getResource("maps/" + imageFileName));
 
         var image = ImageIO.read(this.imageFile);
 
