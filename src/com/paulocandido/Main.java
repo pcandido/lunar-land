@@ -56,7 +56,7 @@ public class Main extends Thread {
             }
 
             var best = population.getBest();
-            System.out.printf("%4d :: %3.6f :: %6d :: %s\n", population.getGeneration(), best.getFitness(), end - start, best.getStatus() == Spaceship.Status.success ? "SUCCESS" : "FAIL");
+            System.out.printf("%4d :: %3.6f :: %4.2f :: %6d :: %s\n", population.getGeneration(), best.getFitness(), best.getFuel(), end - start, best.getStatus() == Spaceship.Status.success ? "SUCCESS" : "FAIL");
 
             population.nextGeneration(moon);
         }

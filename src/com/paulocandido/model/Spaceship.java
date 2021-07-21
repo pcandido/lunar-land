@@ -94,6 +94,10 @@ public class Spaceship {
         return fitness;
     }
 
+    public double getFuel() {
+        return fuel;
+    }
+
     public Obstacle[] getObstacles() {
         return obstacles;
     }
