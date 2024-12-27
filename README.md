@@ -23,10 +23,6 @@ A combinação dessas tecnologias resulta em um processo não supervisionado, ma
 
 Os vídeos abaixo mostram alguns processos de treinamento/evolução.
 
-<video width="320" height="240" controls>
-  <source src="./doc/res1.mp4" type="video/mp4">
-</video>
+![res1](./doc/res1.gif)
 
-<video width="320" height="240" controls>
-  <source src="./doc/res2.mp4" type="video/mp4">
-</video>
+![res2](./doc/res2.gif)
